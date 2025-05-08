@@ -50,7 +50,7 @@ public class Partie {
                 // Utilisation de "replace" à la place de "trim" pour enlever l'espace entre deux cases
                 // Exemple: " a2 a4 " -> "a2a4"
                 // Il est peu probable qu'un autre caractère invisible soit inséré par l'utilisateur
-                String ligne = scanner.nextLine().replace(" ", "");
+                String ligne = scanner.nextLine().replace(" ", "").toUpperCase();
 
                 // Récupération de la case de départ et de la pièce à jouer
                 System.out.println("Quelle pièce voulez-vous déplacer ? (Par exemple, envoyez a1 pour déplacer le pion en a1)");
@@ -146,30 +146,81 @@ public class Partie {
     }
 
     public Case getCase(String numeroCase) throws NumberFormatException, IndexOutOfBoundsException {
-        // numeroCase doit être dans le format <lettreColonne><numéroLigne>
-        // Exemple: "a2" pour la case à la colonne a et sur la ligne 2
+        // numeroCase doit être dans le format <LETTRE_COLONNE><numéroLigne>
+        // Exemple: "A2" pour la case à la colonne a et sur la ligne 2
         int colonne = getColonne(numeroCase.charAt(0));
         int ligne = Integer.parseInt(numeroCase.charAt(1)+"");
 
         return this.echiquier.getCase(colonne, ligne);
     }
 
+    //TODO Finir
     public Piece findObstacle(Case caseDepart, Case caseArrivee) {
         return new Piece();
     }
 
+    //TODO Finir
     public boolean isFin() {
         return false;
     }
 
+    //TODO Finir
     public void actualiserAffichage() {
+            //               |———————————————————————————————|
+            //             1 | ♜ | ♞ | ♝ | ♚ | ♛ | ♝ | ♞ | ♜ |
+            //               |———————————————————————————————|
+            //             2 | ♟ | ♟ | ♟ | ♟ | ♟ | ♟ | ♟ | ♟ |
+            //               |———————————————————————————————|
+            //             3 |   |   |   |   |   |   |   |   |
+            //               |———————————————————————————————|
+            //             4 |   |   |   |   |   |   |   |   |
+            //               |———————————————————————————————|
+            //             5 |   |   |   |   |   |   |   |   |
+            //               |———————————————————————————————|
+            //             6 |   |   |   |   |   |   |   |   |
+            //               |———————————————————————————————|
+            //             7 | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ |
+            //               |———————————————————————————————|
+            //             8 | ♖ | ♘ | ♗ | ♕ | ♔ | ♗ | ♘ | ♖ |
+            //               |———————————————————————————————|
+            //                 A   B   C   D   E   F   G   H  
 
+        String affichage = "";
+        Case[][] cases = this.echiquier.getCases();
+        for (int ligneI = 0; ligneI < cases.length; ligneI++) {
+
+            // Écriture d'une nouvelle ligne
+            affichage += "\n  |———————————————————————————————|\n" + ligneI+1 + " |";
+
+            for (int caseI = 0; caseI < cases[ligneI].length; caseI++) {
+
+                //Écriture d'une nouvelle case
+                Piece piece = cases[ligneI][caseI].getContenu();
+                char contenu ;
+                if (piece == null) contenu = ' ';
+                else contenu = piece.getIcone();
+
+                if ((ligneI%2 == 0 && caseI%2 == 0) || (ligneI%2 != 0 && caseI%2 != 0)) {
+                    affichage += " " + contenu + " |";
+                } else {
+                    affichage += "\u001B[47m " + contenu + " \u001B[40m|";
+                }
+            }
+        }
+
+        affichage += """
+          |———————————————————————————————|
+            A   B   C   D   E   F   G   H
+        """;
+        System.out.println(affichage);
     }
 
-    public void validerCoup() {
+    //TODO Finir
+    public void validerCoup(Case caseArrivee, Case caseDepart) {
         
     }
 
+    //TODO Finir
     public void fin() {
 
     }  
