@@ -1,32 +1,29 @@
 public class Echiquier {
 
-
-
-
     public static int getNombreColonne(char lettre) {
         return switch (lettre) {
-            case 'a' -> 0;
-            case 'b' -> 1;
-            case 'c' -> 2;
-            case 'd' -> 3;
-            case 'e' -> 4;
-            case 'f' -> 5;
-            case 'g' -> 6;
-            case 'h' -> 7;
-            default -> -1;
+            case 'A' -> 1;
+            case 'B' -> 2;
+            case 'C' -> 3;
+            case 'D' -> 4;
+            case 'E' -> 5;
+            case 'F' -> 6;
+            case 'G' -> 7;
+            case 'H' -> 8;
+            default -> 0;
         };
     }
 
     public static char getLettreColonne(int index) {
         return switch (index) {
-            case 0 -> 'a';
-            case 1 -> 'b';
-            case 2 -> 'c';
-            case 3 -> 'd';
-            case 4 -> 'e';
-            case 5 -> 'f';
-            case 6 -> 'g';
-            case 7 -> 'h';
+            case 1 -> 'A';
+            case 2 -> 'B';
+            case 3 -> 'C';
+            case 4 -> 'D';
+            case 5 -> 'E';
+            case 6 -> 'F';
+            case 7 -> 'E';
+            case 8 -> 'H';
             default -> '?';
         };
     }
