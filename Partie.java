@@ -36,7 +36,7 @@ public class Partie {
     }
 
     public void commencer() {
-        Case caseDepart = null ;
+        Case caseDepart ;
         Case caseArrivee = null ;
 
         while (!this.isFin()) {
