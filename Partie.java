@@ -190,7 +190,7 @@ public class Partie {
         for (int ligneI = 0; ligneI < cases.length; ligneI++) {
 
             // Écriture d'une nouvelle ligne
-            affichage += "\n  |———————————————————————————————|\n" + ligneI+1 + " |";
+            affichage += "\n" + ligneI+1 + " |";
 
             for (int caseI = 0; caseI < cases[ligneI].length; caseI++) {
 
@@ -198,20 +198,22 @@ public class Partie {
                 Piece piece = cases[ligneI][caseI].getContenu();
                 char contenu ;
                 if (piece == null) contenu = ' ';
-                else contenu = piece.getIcone();
+                else if (piece.getCouleur() == Couleur.Noir) {
+                    contenu = "\u001B[30m"+piece.getIcone();
+                } else {
+                    contenu = piece.getIcon();
+                }
+                
 
                 if ((ligneI%2 == 0 && caseI%2 == 0) || (ligneI%2 != 0 && caseI%2 != 0)) {
-                    affichage += " " + contenu + " |";
+                    affichage += "\u001B[47m " + contenu + " \u001B[0m";
                 } else {
-                    affichage += "\u001B[47m " + contenu + " \u001B[40m|";
+                    affichage += " " + contenu + " ";
                 }
             }
         }
 
-        affichage += """
-          |———————————————————————————————|
-            A   B   C   D   E   F   G   H
-        """;
+        affichage += "    A   B   C   D   E   F   G   H";
         System.out.println(affichage);
     }
 

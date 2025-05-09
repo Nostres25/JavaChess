@@ -21,7 +21,20 @@ public class Executer {
                 A   B   C   D   E   F   G   H  
         """;
 
-        System.out.println(testAffichage);
+        String testAffichage2 = """
+            1 |\u001B[47m \u001B[30m♜ \u001B[0m\u001B[0m \u001B[30m♞ \u001B[0m\u001B[47m \u001B[30m♝ \u001B[0m\u001B[0m \u001B[30m♚ \u001B[0m\u001B[47m \u001B[30m♛ \u001B[0m\u001B[0m \u001B[30m♝ \u001B[0m\u001B[47m \u001B[30m♞ \u001B[0m\u001B[0m \u001B[30m♜ \u001B[0m|
+            2 |\u001B[0m \u001B[30m♟ \u001B[0m\u001B[47m \u001B[30m♟ \u001B[0m\u001B[0m \u001B[30m♟ \u001B[0m\u001B[47m \u001B[30m♟ \u001B[0m\u001B[0m \u001B[30m♟ \u001B[0m\u001B[47m \u001B[30m♟ \u001B[0m\u001B[0m \u001B[30m♟ \u001B[0m\u001B[47m \u001B[30m♟ \u001B[0m\u001B[0m|
+            3 |\u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m   |
+            4 |\u001B[0m   \u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m|
+            5 |\u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m   |
+            6 |\u001B[0m   \u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m   \u001B[47m   \u001B[0m|
+            7 |\u001B[47m \u001B[37m♙ \u001B[0m\u001B[0m \u001B[37m♙ \u001B[0m\u001B[47m ♙ \u001B[0m ♙ \u001B[47m ♙ \u001B[0m ♙ \u001B[47m ♙ \u001B[0m ♙ |
+            8 |\u001B[0m ♖ \u001B[47m ♘ \u001B[0m ♗ \u001B[47m ♕ \u001B[0m ♔ \u001B[47m ♗ \u001B[0m ♘ \u001B[47m ♖ \u001B[0m|
+                A  B  C  D  E  F  G  H  
+        """;
+
+
+        System.out.println(testAffichage2);
 
         Partie.nouvellePartie();
 
