@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class Executer {
     public static void main(String[] args) {
@@ -33,14 +34,14 @@ public class Executer {
         Rectangle rect = new Rectangle();
         rect.setBounds(10, 10, 200, 300);
 
-        JLabel label = new JLabel("ahahaha c'est bob ♜lenon");
-        label.setFont(Font.getFont(Font.MONOSPACED));
+        JLabel label = new JLabel("<html><blue>ahahaha</blue> <strong style='color:white'>c'est bob</strong> ♜lenon<br/>12345678<br/>azertyu<br/>♞♞♞♞♞♞♞♞</html>", SwingConstants.CENTER);
+        Font font = new Font("Courier", Font.PLAIN, 12);
+        label.setFont(font);
         
 
         JPanel panel2 = new JPanel();
         panel2.setBackground(Color.RED);
         panel2.setBounds(10, 10, 200, 300);
-
         panel2.add(label);
 
         JButton button = new JButton("Enter");
