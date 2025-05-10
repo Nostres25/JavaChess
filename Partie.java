@@ -98,11 +98,17 @@ public class Partie {
                     caseArrivee = null;
                     continue;
                 }
+                
+                // TODO doit sauver son roi si le joueur est en echec =>(impique) le roi ne doit pas être en echec après le coup
 
                 // Validation du coup et changement de tour
                 this.validerCoup(caseDepart, caseArrivee);
                 if (tour == Couleur.Blanc) tour = Couleur.Noir;
                 else tour = Couleur.Blanc;
+
+                if (estEnEchec(tour)) {
+                    System.out.println("Echec !!");
+                }
 
             } catch (NoSuchElementException e) {
                 scanner.close();
@@ -156,11 +162,49 @@ public class Partie {
 
     //TODO Finir
     public Piece findObstacle(Case caseDepart, Case caseArrivee) {
-        return new Piece();
+        Piece piece = caseDepart.getPiece();
+
+        // Une pièce du même camp ne doit pas être dans la case d'arrivée
+        Piece obstacle = caseArrivee.getPiece();
+        if (obstacle != null && obstacle.getColor() == piece.getColor()) {
+            return obstacle;
+        }
+
+        if (piece.getNom() == "Cavalier") return null;
+
+        // Vérification des autres cases entre la case d'arrivée et la case de départ
+        obstacle = null;
+
+        //Partir de la case d'arrivée pour aller jusqu'à la case de départ
+        int ligneI = caseArrivee.getLigne();
+        int colonneI = caseArrivee.getColonne();
+
+        // Tant que la case de départ n'est pas atteinte et qu'un obstacle n'a pas été trouvé
+        while (obstacle == null) {
+            // Deplacement vers la prochaine case à vérifier
+            if (ligneI > caseDepart.getLigne()) ligneI--;
+            else if (ligneI < caseDepart.getLigne()) ligneI++;
+
+            if (colonneI > caseDepart.getColonne()) colonneI--;
+            else if (colonneI < caseDepart.getColonne()) colonneI++;
+
+            if (ligneI == caseDepart.getLigne() && colonneI == caseDepart.getColonne()) return null;
+
+            obstacle = Echiquier.getCase(colonneI, ligneI).getPiece();
+        }
+
+        return obstacle;
+    }
+
+    public boolean estEnEchec(Couleur tour) {
+        // TODO si un pion adverse peu manger le roi
+        return false;
     }
 
     //TODO Finir
     public boolean isFin() {
+        boolean echec = estEnEchec(tour);
+        //TODO détecter: echec + ne peut pas bouger OU match nul
         return false;
     }
 
@@ -177,7 +221,7 @@ public class Partie {
             for (int caseI = 0; caseI < cases[ligneI].length; caseI++) {
 
                 //Écriture d'une nouvelle case
-                Piece piece = cases[ligneI][caseI].getContenu();
+                Piece piece = cases[ligneI][caseI].getPiece();
                 char contenu ;
                 if (piece == null) contenu = ' ';
                 else if (piece.getCouleur() == Couleur.Noir) {
@@ -201,6 +245,10 @@ public class Partie {
 
     //TODO Finir
     public void validerCoup(Case caseArrivee, Case caseDepart) {
+        Piece piece = caseDepart.getPiece();
+
+        caseDepart.setPiece(null);
+        caseArrivee.setPiece(piece);
         
     }
 
