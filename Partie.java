@@ -1,38 +1,41 @@
 import java.util.*;
 
 public class Partie {
-    private Joueur joueur1;
-    private Joueur joueur2;
-    private Echiquier echiquier; 
-    private Couleur tour;
+    private final Joueur joueurBlanc;
+    private final Joueur joueurNoir;
+    private final Echiquier echiquier; 
+    private Joueur joueurActuel;
 
-    public Partie(Joueur joueur1, Joueur joueur2) {
-        this.joueur1 = joueur1;
-        this.joueur2 = joueur2;
+    public Partie(String nomJoueur1, String nomJoueur2) {
         this.echiquier = new Echiquier();
-        this.tour = Couleur.Blanc;
+
+        // Initialisation des joueurs
+        this.joueurBlanc = new Joueur(this, Couleur.Blanc, nomJoueur1);
+        this.joueurNoir = new Joueur(this, Couleur.Noir, nomJoueur2);
     }
     public Partie(Partie partie) {
-        this.joueur1 = partie.getJoueur1();
-        this.joueur2 = partie.getJoueur2();
-        this.echiquier = new Echiquier();
-        this.tour = Couleur.Blanc;
+        this(partie.getJoueur(Couleur.Blanc).getNom(), partie.getJoueur(Couleur.Noir).getNom());
     }
 
-    @SuppressWarnings("ConvertToTryWithResources")
     public static void nouvellePartie() {
-        System.out.println("Création d'une nouvelle partie d'echec...");
-        System.out.println("Entrez le nom du joueur 1 qui jouera les blancs:");
-        Scanner scanner = new Scanner(System.in);
-        
-        Joueur joueur1 = new Joueur(scanner.nextLine());
+        try {
+            System.out.println("Création d'une nouvelle partie d'echec...");
+            System.out.println("Entrez le nom du joueur 1 qui jouera les blancs:");
+            Scanner scanner = new Scanner(System.in);
+            
+            String nomJoueur1 = scanner.nextLine();
 
-        System.out.println("Entrez le nom du joueur 2 qui jouera les noirs:");
-        Joueur joueur2 = new Joueur(scanner.nextLine());
+            System.out.println("Entrez le nom du joueur 2 qui jouera les noirs:");
+            String nomJoueur2 = scanner.nextLine();
 
-        scanner.close();
+            scanner.close();
 
-        new Partie(joueur1, joueur2).commencer();
+            new Partie(nomJoueur1, nomJoueur2).commencer();
+            
+        } catch (Exception e) {
+            System.out.println("Une erreur est survenue au lancement de la partie !");
+        }
+
     }
 
     public void commencer() {
@@ -58,7 +61,7 @@ public class Partie {
                 Piece piece = caseDepart.getPiece();
 
                 // Le joueur doit avoir une pièce à la case sélectionnée
-                if (piece == null || this.tour != piece.getCouleur()) {
+                if (piece == null || this.joueurActuel.getCouleur() != piece.getCouleur()) {
                     System.out.println("Vous n'avez pas de pièce à la case " + caseDepart.getNumero());
                     scanner.close();
                     continue;
@@ -72,7 +75,7 @@ public class Partie {
                 // Le joueur peut aussi jouer en deux questions
                 if (caseArrivee == null) {
                     System.out.println("Vers quelle case voulez-vous déplacer votre " + caseDepart.getPiece().getNom() + " ? (exemple: a4)" );
-                    caseArrivee = this.getCase(scanner.nextLine().replace(" ", ""));
+                    caseArrivee = this.getCase(scanner.nextLine().replace(" ", "")); // TODO revoir si faut re verif si c'est valide
                 }
 
                 // Fin du scanner, la case de départ et la case d'arrivée ont été sélectionnés avec succès.
@@ -103,10 +106,14 @@ public class Partie {
 
                 // Validation du coup et changement de tour
                 this.validerCoup(caseDepart, caseArrivee);
-                if (tour == Couleur.Blanc) tour = Couleur.Noir;
-                else tour = Couleur.Blanc;
 
-                if (estEnEchec(tour)) {
+                System.out.print("Coup joué par " + this.joueurActuel.getNom() + " : " + piece.getNomComplet() + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
+
+                this.joueurActuel = this.getProchainJoueur();
+
+                System.out.println("Au tour de " + this.joueurActuel.getNom() +" !");
+
+                if (this.estEnEchec(this.joueurActuel)) {
                     System.out.println("Echec !!");
                 }
 
@@ -135,20 +142,28 @@ public class Partie {
 
     }
 
-    public Joueur getJoueur1() {
-        return this.joueur1;
+    public Joueur getJoueur(Couleur couleur) {
+        if (couleur == Couleur.Blanc) {
+            return joueurNoir;
+        } else {
+            return joueurBlanc;
+        }
     }
 
-    public Joueur getJoueur2() {
-        return this.joueur2;
+    public Joueur getJoueurActuel() {
+        return this.joueurActuel;
+    }
+
+    public Joueur getProchainJoueur() {
+        if (this.joueurActuel.getCouleur() == Couleur.Blanc) {
+            return joueurNoir;
+        } else {
+            return joueurBlanc;
+        }
     }
 
     public Echiquier getEchiquier() {
         return this.echiquier;
-    }
-
-    public Couleur getTour() {
-        return this.tour;
     }
 
     public Case getCase(String numeroCase) throws NumberFormatException, IndexOutOfBoundsException {
@@ -196,14 +211,19 @@ public class Partie {
         return obstacle;
     }
 
-    public boolean estEnEchec(Couleur tour) {
-        // TODO si un pion adverse peu manger le roi
+    public boolean estEnEchec(Joueur joueur) {
+        Roi roi = joueur.getRoi();
+
+        for (Piece piece : this.getProchainJoueur().getPieces()) {
+            if (piece.deplacement(roi.getCase())) return true;
+        }
+        
         return false;
     }
 
     //TODO Finir
     public boolean isFin() {
-        boolean echec = estEnEchec(tour);
+        boolean echec = estEnEchec(this.joueurActuel);
         //TODO détecter: echec + ne peut pas bouger OU match nul
         return false;
     }
@@ -245,11 +265,7 @@ public class Partie {
 
     //TODO Finir
     public void validerCoup(Case caseArrivee, Case caseDepart) {
-        Piece piece = caseDepart.getPiece();
-
-        caseDepart.setPiece(null);
-        caseArrivee.setPiece(piece);
-        
+        caseDepart.getPiece().setCase(caseArrivee);
     }
 
     //TODO Finir
