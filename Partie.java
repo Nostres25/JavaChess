@@ -99,6 +99,12 @@ public class Partie {
                 // Fin du scanner, la case de départ et la case d'arrivée ont été sélectionnés avec succès.
                 scanner.close();
 
+                if (caseArrivee.equals(caseDepart)) {
+                    repondre(this.joueurActuel, "Vous ne pouvez pas rester sur la même case !");
+                    caseArrivee = null;
+                    continue;
+                }
+
                 // Verification du déplacement de la pièce.
                 // La pièce doit pouvoir atteindre la case selon les règles du jeu.
                 if (!piece.deplacement(caseArrivee)) {
