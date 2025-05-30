@@ -41,9 +41,12 @@ public class Partie {
     public void commencer() {
         Case caseDepart ;
         Case caseArrivee = null ;
+        boolean enEchec = false;
 
         while (!this.isFin()) {
             this.actualiserAffichage();
+
+            System.out.println("Au tour de " + this.joueurActuel.getNom() +" !");
 
             Scanner scanner = new Scanner(System.in);
             // Possibilité de jouer d'un coup ou en deux questions
@@ -101,19 +104,22 @@ public class Partie {
                     caseArrivee = null;
                     continue;
                 }
-                
-                // TODO doit sauver son roi si le joueur est en echec =>(impique) le roi ne doit pas être en echec après le coup
+
+                if (estEnEchec(caseDepart, caseArrivee)) {
+                    System.out.println("Vous ne pouvez pas effectuer ce déplacement, votre roi serait en echec");
+                    caseArrivee = null;
+                    continue;
+                }
 
                 // Validation du coup et changement de tour
                 this.validerCoup(caseDepart, caseArrivee);
 
                 System.out.print("Coup joué par " + this.joueurActuel.getNom() + " : " + piece.getNomComplet() + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
 
-                this.joueurActuel = this.getJoueurAdverse();
+                this.joueurActuel = this.getJoueurAdverse(this.joueurActuel);
 
-                System.out.println("Au tour de " + this.joueurActuel.getNom() +" !");
-
-                if (this.estEnEchec(this.joueurActuel)) { // TODO Is fin vérifie les echecs aussi -> doublon inutile
+                enEchec = this.estEnEchec();
+                if (enEchec) {
                     System.out.println("Echec !!");
                 }
 
@@ -138,7 +144,7 @@ public class Partie {
 
         }
 
-        this.fin();
+        this.fin(enEchec);
 
     }
 
@@ -154,7 +160,7 @@ public class Partie {
         return this.joueurActuel;
     }
 
-    public Joueur getJoueurAdverse() {
+    public Joueur getJoueurAdverse(Joueur joueur) {
         if (this.joueurActuel.getCouleur() == Couleur.Blanc) {
             return joueurNoir;
         } else {
@@ -218,11 +224,11 @@ public class Partie {
         return null;
     }
 
-    public boolean estEnEchec(Joueur joueur) {
-        Roi roi = joueur.getRoi();
+    public boolean estEnEchec() {
+        Roi roi = this.joueurActuel.getRoi();
 
         // Recherche une pièce du joueur adverse qui peut accéder sans obstacle au roi du joueur courant
-        for (Piece piece : this.getJoueurAdverse().getPieces()) {
+        for (Piece piece : this.getJoueurAdverse(this.joueurActuel).getPieces()) {
             if (
                 piece.deplacement(roi.getCase()) && 
                 this.findObstacle(piece.getCase(), roi.getCase()) == null
@@ -232,25 +238,21 @@ public class Partie {
         return false;
     }
 
+    public boolean estEnEchec(Case caseDepart, Case caseArrivee) {
+        // Permet de tester si le roi est en echec à la suite d'un déplacement
+
+        Piece pieceEcrasee = caseArrivee.getPiece();
+        caseDepart.getPiece().setCase(caseArrivee);
+
+        boolean enEchec = estEnEchec();
+
+        caseArrivee.getPiece().setCase(caseDepart);
+        if (pieceEcrasee != null) pieceEcrasee.setCase(caseArrivee);
+        
+        return enEchec;
+    }
+
     public boolean isFin() {
-
-        /* TODO retirer ce test
-        Roi roi = this.joueurActuel.getRoi();
-        ArrayList<Piece> estEnEchecPar = new ArrayList<>();
-
-        ArrayList<Piece> piecesJouables = this.joueurActuel.getPieces();
-
-        for (Piece piece : this.getProchainJoueur().getPieces()) {
-            if (piece.deplacement(roi.getCase())) {
-                ArrayList<Piece> obstacles = this.findObstacles(piece.getCase(), roi.getCase()); 
-                if (obstacles.isEmpty()) {
-                    estEnEchecPar.add(piece);
-                } else if (obstacles.size() == 1 && piecesJouables.contains(obstacles.get(0))) {
-                    //TODO retirer le message d'erreur si tout fonctionne bien
-                    if (!piecesJouables.remove(obstacles.get(0))) System.err.println("Debug: dans isFin(), une pièce (" + obstacles.get(0) + ") qui fait obstacle à l'enemie pour mettre en echec le roi ("+roi+") n'a pas pu être retiré de la liste des pièces jouables ("+piecesJouables+") alors qu'elle est censée y être");
-                }
-            }
-        }*/
 
         // Recherche de coup jouable après lequel le roi n'est pas en echec
         for (Case[] ligneCases : this.echiquier.getCases()) {
@@ -260,19 +262,8 @@ public class Partie {
                 for (Piece pieceTestee : this.joueurActuel.getPieces()) {
 
                     if (pieceTestee.deplacement(caseTestee) && !this.findObstacle(pieceTestee.getCase(), caseTestee)) {
-
-                        // Variables tampon pour revenir en arrière une fois le sénario testé
-                        Piece pieceEcrasee = caseTestee.getPiece();
-                        Case caseActuelle = pieceTestee.getCase();
-                        
                         // Verifier si le roi est en echec si la pièce testée est déplacée à la case testée
-                        pieceTestee.setCase(caseTestee);
-                        if (!this.estEnEchec(this.joueurActuel)) return false;
-
-                        // Remise en état de l'échiquier
-                        pieceTestee.setCase(caseActuelle);
-                        if (pieceEcrasee != null) pieceEcrasee.setCase(caseTestee);
-
+                        if (!this.estEnEchec(pieceTestee.getCase(), caseTestee)) return false;
                     }
                 }
             }
@@ -319,16 +310,16 @@ public class Partie {
         Piece pieceMangee = caseArrivee.getPiece();
 
         if (pieceMangee != null) {
-            if (!this.getJoueurAdverse().getPieces().remove(pieceMangee)) System.err.println("La pièce mangée n'a pas été retirée de la liste des pièces du joueur adverse");
+            if (!this.getJoueurAdverse(this.joueurActuel).getPieces().remove(pieceMangee)) System.err.println("La pièce mangée n'a pas été retirée de la liste des pièces du joueur adverse");
             // TODO remplir la liste des pieces mangées et retirer le condition
         }
         caseDepart.getPiece().setCase(caseArrivee);
     }
 
     //TODO Finir
-    public void fin() {
+    public void fin(boolean enEchec) {
 
-        if (this.estEnEchec(this.joueurActuel)) {
+        if (enEchec) {
             System.out.println("Echec et mat !");
         } else {
             System.out.println("Match nul !");
