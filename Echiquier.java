@@ -22,7 +22,7 @@ public class Echiquier {
             case 4 -> 'D';
             case 5 -> 'E';
             case 6 -> 'F';
-            case 7 -> 'E';
+            case 7 -> 'G';
             case 8 -> 'H';
             default -> '?';
         };

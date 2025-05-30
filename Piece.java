@@ -29,8 +29,9 @@ public abstract class Piece {
     public String getNomComplet(){
         return this.icone + " " + this.nom; 
     }
-    
-    
+
+    public abstract boolean deplacement ( Case destination);
+
 
 
     }
