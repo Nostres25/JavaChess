@@ -38,6 +38,10 @@ public class Partie {
 
     }
 
+    public static void repondre(Joueur joueur, String message) {
+        System.out.println("-> " + joueur.getNom() + " (" + joueur.getCouleur() + ") : " + message);
+    }
+
     public void commencer() {
         Case caseDepart ;
         Case caseArrivee = null ;
@@ -50,7 +54,7 @@ public class Partie {
 
             Scanner scanner = new Scanner(System.in);
             // Possibilité de jouer d'un coup ou en deux questions
-            System.out.println("Que souhaitez-vous jouer ? (Par exemple, envoyez a1 pour déplacer la pièce présente sur la case a1)");
+            repondre(this.joueurActuel, "Que souhaitez-vous jouer ? (Par exemple, envoyez a1 pour déplacer la pièce présente sur la case a1)");
             
             try {
                 // Utilisation de "replace" à la place de "trim" pour enlever l'espace entre deux cases
@@ -59,13 +63,13 @@ public class Partie {
                 String ligne = scanner.nextLine().replace(" ", "").toUpperCase();
 
                 // Récupération de la case de départ et de la pièce à jouer
-                System.out.println("Quelle pièce voulez-vous déplacer ? (Par exemple, envoyez a1 pour déplacer le pion en a1)");
+                repondre(this.joueurActuel, "Quelle pièce voulez-vous déplacer ? (Par exemple, envoyez a1 pour déplacer le pion en a1)");
                 caseDepart = this.getCase(ligne);
                 Piece piece = caseDepart.getPiece();
 
                 // Le joueur doit avoir une pièce à la case sélectionnée
                 if (piece == null || this.joueurActuel.getCouleur() != piece.getCouleur()) {
-                    System.out.println("Vous n'avez pas de pièce à la case " + caseDepart.getNumero());
+                    repondre(this.joueurActuel, "Vous n'avez pas de pièce à la case " + caseDepart.getNumero());
                     scanner.close();
                     continue;
                 }
@@ -77,7 +81,7 @@ public class Partie {
 
                 // Le joueur peut aussi jouer en deux questions
                 if (caseArrivee == null) {
-                    System.out.println("Vers quelle case voulez-vous déplacer votre " + caseDepart.getPiece().getNom() + " ? (exemple: a4)" );
+                    repondre(this.joueurActuel, "Vers quelle case voulez-vous déplacer votre " + caseDepart.getPiece().getNom() + " ? (exemple: a4)" );
                     caseArrivee = this.getCase(scanner.nextLine().replace(" ", "")); // TODO revoir si faut re verif si c'est valide
                 }
 
@@ -87,7 +91,7 @@ public class Partie {
                 // Verification du déplacement de la pièce.
                 // La pièce doit pouvoir atteindre la case selon les règles du jeu.
                 if (!piece.deplacement(caseArrivee)) {
-                    System.out.println("La pièce " + piece.getNom() + " ne peut pas effectuer un tel déplacement !");
+                    repondre(this.joueurActuel, "La pièce " + piece.getNom() + " ne peut pas effectuer un tel déplacement !");
                     caseArrivee = null;
                     // TODO peut-être ajouter un piece.getRegle() 
                     // pour un message d'erreur personnalisé en fonction du type de pièce
@@ -100,13 +104,13 @@ public class Partie {
 
                 // Une autre pièce ne doit pas empêcher le déplacement selon les règles du jeu
                 if (obstacle != null) {
-                    System.out.println("La piece " + obstacle.getNomComplet() + " fait obstacle en " + piece.getCase().getNumero() + ".");
+                    repondre(this.joueurActuel, "La piece " + obstacle.getNomComplet() + " fait obstacle en " + piece.getCase().getNumero() + ".");
                     caseArrivee = null;
                     continue;
                 }
 
                 if (estEnEchec(caseDepart, caseArrivee)) {
-                    System.out.println("Vous ne pouvez pas effectuer ce déplacement, votre roi serait en echec");
+                    repondre(this.joueurActuel, "Vous ne pouvez pas effectuer ce déplacement, votre roi serait en echec");
                     caseArrivee = null;
                     continue;
                 }
@@ -114,26 +118,26 @@ public class Partie {
                 // Validation du coup et changement de tour
                 this.validerCoup(caseDepart, caseArrivee);
 
-                System.out.print("Coup joué par " + this.joueurActuel.getNom() + " : " + piece.getNomComplet() + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
+                repondre(this.joueurActuel, "Coup joué : " + piece.getNomComplet() + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
 
                 this.joueurActuel = this.getJoueurAdverse(this.joueurActuel);
 
                 enEchec = this.estEnEchec();
                 if (enEchec) {
-                    System.out.println("Echec !!");
+                    repondre(this.joueurActuel, "Echec !!");
                 }
 
             } catch (NoSuchElementException e) {
                 scanner.close();
-                System.out.println("Veuillez entrer un numéro de case !");
+                repondre(this.joueurActuel, "Veuillez entrer un numéro de case !");
                 caseArrivee = null;
             } catch (IndexOutOfBoundsException e) {
                 scanner.close();
-                System.out.println("Veuillez entrer un numéro de case valide !");
+                repondre(this.joueurActuel, "Veuillez entrer un numéro de case valide !");
                 caseArrivee = null;
             } catch (NumberFormatException e) {
                 scanner.close();
-                System.out.println("Veuillez préciser un chiffre pour localiser la ligne. (et une lettre pour la colonne)");
+                repondre(this.joueurActuel, "Veuillez préciser un chiffre pour localiser la ligne. (et une lettre pour la colonne)");
                 caseArrivee = null;
             } catch (Exception e) {
                 scanner.close();
@@ -320,9 +324,9 @@ public class Partie {
     public void fin(boolean enEchec) {
 
         if (enEchec) {
-            System.out.println("Echec et mat !");
+            repondre(this.joueurActuel, "Echec et mat !");
         } else {
-            System.out.println("Match nul !");
+            repondre(this.joueurActuel, "Match nul !");
         }
 
     }  
