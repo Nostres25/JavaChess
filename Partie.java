@@ -92,12 +92,12 @@ public class Partie {
                     continue;
                 }
 
-                // Vérification des obstacles
+                // Vérification des obstacles et récupération du premier obstacle 
                 Piece obstacle = this.findObstacle(caseDepart, caseArrivee);
 
                 // Une autre pièce ne doit pas empêcher le déplacement selon les règles du jeu
                 if (obstacle != null) {
-                    System.out.println("La piece " + piece.getNomComplet() + " fait obstacle en " + piece.getCase().getNumero() + ".");
+                    System.out.println("La piece " + obstacle.getNomComplet() + " fait obstacle en " + piece.getCase().getNumero() + ".");
                     caseArrivee = null;
                     continue;
                 }
@@ -109,11 +109,11 @@ public class Partie {
 
                 System.out.print("Coup joué par " + this.joueurActuel.getNom() + " : " + piece.getNomComplet() + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
 
-                this.joueurActuel = this.getProchainJoueur();
+                this.joueurActuel = this.getJoueurAdverse();
 
                 System.out.println("Au tour de " + this.joueurActuel.getNom() +" !");
 
-                if (this.estEnEchec(this.joueurActuel)) {
+                if (this.estEnEchec(this.joueurActuel)) { // TODO Is fin vérifie les echecs aussi -> doublon inutile
                     System.out.println("Echec !!");
                 }
 
@@ -154,7 +154,7 @@ public class Partie {
         return this.joueurActuel;
     }
 
-    public Joueur getProchainJoueur() {
+    public Joueur getJoueurAdverse() {
         if (this.joueurActuel.getCouleur() == Couleur.Blanc) {
             return joueurNoir;
         } else {
@@ -185,47 +185,99 @@ public class Partie {
             return obstacle;
         }
 
+        //TODO pourquoi ne pas utiliser instanceof ? 
         if (piece.getNom() == "Cavalier") return null;
 
-        // Vérification des autres cases entre la case d'arrivée et la case de départ
-        obstacle = null;
-
-        //Partir de la case d'arrivée pour aller jusqu'à la case de départ
+        // Partir de la case d'arrivée pour aller jusqu'à la case de départ
         int ligneI = caseArrivee.getLigne();
         int colonneI = caseArrivee.getColonne();
 
-        // Tant que la case de départ n'est pas atteinte et qu'un obstacle n'a pas été trouvé
-        while (obstacle == null) {
+        // Calcul de la direction du déplacement
+        int ligneDiff = caseArrivee.getLigne() - caseDepart.getLigne();
+        int colonneDiff = caseArrivee.getColonne() - caseDepart.getColonne();
+
+        int ligneDirection = ligneDiff / Math.abs(ligneDiff);
+        int colonneDirection = colonneDiff / Math.abs(colonneDiff);
+
+        // Tant que la dernière case (avant case de départ) n'est pas atteinte et tant qu'il n'y a pas d'obstacle
+        int ligneDerniereCase = caseDepart.getLigne() - ligneDirection;
+        int colonneDerniereCase = caseDepart.getColonne() - colonneDirection;
+
+        while (ligneI != ligneDerniereCase || colonneI != colonneDerniereCase) {
+
             // Deplacement vers la prochaine case à vérifier
-            if (ligneI > caseDepart.getLigne()) ligneI--;
-            else if (ligneI < caseDepart.getLigne()) ligneI++;
+            ligneI += ligneDirection;
+            colonneI += colonneDirection;
 
-            if (colonneI > caseDepart.getColonne()) colonneI--;
-            else if (colonneI < caseDepart.getColonne()) colonneI++;
+            // Si un obstacle est trouvé, le retourner (n'importe quelle pièce sur le chemin)
+            obstacle = this.echiquier.getCase(colonneI, ligneI).getPiece();
 
-            if (ligneI == caseDepart.getLigne() && colonneI == caseDepart.getColonne()) return null;
-
-            obstacle = Echiquier.getCase(colonneI, ligneI).getPiece();
+            if (obstacle != null) return obstacle;
         }
 
-        return obstacle;
+        return null;
     }
 
     public boolean estEnEchec(Joueur joueur) {
         Roi roi = joueur.getRoi();
 
-        for (Piece piece : this.getProchainJoueur().getPieces()) {
-            if (piece.deplacement(roi.getCase())) return true;
+        // Recherche une pièce du joueur adverse qui peut accéder sans obstacle au roi du joueur courant
+        for (Piece piece : this.getJoueurAdverse().getPieces()) {
+            if (
+                piece.deplacement(roi.getCase()) && 
+                this.findObstacle(piece.getCase(), roi.getCase()) == null
+            ) return true;
         }
         
         return false;
     }
 
-    //TODO Finir
     public boolean isFin() {
-        boolean echec = estEnEchec(this.joueurActuel);
-        //TODO détecter: echec + ne peut pas bouger OU match nul
-        return false;
+
+        /* TODO retirer ce test
+        Roi roi = this.joueurActuel.getRoi();
+        ArrayList<Piece> estEnEchecPar = new ArrayList<>();
+
+        ArrayList<Piece> piecesJouables = this.joueurActuel.getPieces();
+
+        for (Piece piece : this.getProchainJoueur().getPieces()) {
+            if (piece.deplacement(roi.getCase())) {
+                ArrayList<Piece> obstacles = this.findObstacles(piece.getCase(), roi.getCase()); 
+                if (obstacles.isEmpty()) {
+                    estEnEchecPar.add(piece);
+                } else if (obstacles.size() == 1 && piecesJouables.contains(obstacles.get(0))) {
+                    //TODO retirer le message d'erreur si tout fonctionne bien
+                    if (!piecesJouables.remove(obstacles.get(0))) System.err.println("Debug: dans isFin(), une pièce (" + obstacles.get(0) + ") qui fait obstacle à l'enemie pour mettre en echec le roi ("+roi+") n'a pas pu être retiré de la liste des pièces jouables ("+piecesJouables+") alors qu'elle est censée y être");
+                }
+            }
+        }*/
+
+        // Recherche de coup jouable après lequel le roi n'est pas en echec
+        for (Case[] ligneCases : this.echiquier.getCases()) {
+            for (Case caseTestee: ligneCases) {
+
+                // Vérifier pour toutes les pièces jouables si la case est accessible et sans obstacle
+                for (Piece pieceTestee : this.joueurActuel.getPieces()) {
+
+                    if (pieceTestee.deplacement(caseTestee) && !this.findObstacle(pieceTestee.getCase(), caseTestee)) {
+
+                        // Variables tampon pour revenir en arrière une fois le sénario testé
+                        Piece pieceEcrasee = caseTestee.getPiece();
+                        Case caseActuelle = pieceTestee.getCase();
+                        
+                        // Verifier si le roi est en echec si la pièce testée est déplacée à la case testée
+                        pieceTestee.setCase(caseTestee);
+                        if (!this.estEnEchec(this.joueurActuel)) return false;
+
+                        // Remise en état de l'échiquier
+                        pieceTestee.setCase(caseActuelle);
+                        if (pieceEcrasee != null) pieceEcrasee.setCase(caseTestee);
+
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     //TODO Finir
@@ -263,13 +315,24 @@ public class Partie {
         System.out.println(affichage);
     }
 
-    //TODO Finir
     public void validerCoup(Case caseArrivee, Case caseDepart) {
+        Piece pieceMangee = caseArrivee.getPiece();
+
+        if (pieceMangee != null) {
+            if (!this.getJoueurAdverse().getPieces().remove(pieceMangee)) System.err.println("La pièce mangée n'a pas été retirée de la liste des pièces du joueur adverse");
+            // TODO remplir la liste des pieces mangées et retirer le condition
+        }
         caseDepart.getPiece().setCase(caseArrivee);
     }
 
     //TODO Finir
     public void fin() {
+
+        if (this.estEnEchec(this.joueurActuel)) {
+            System.out.println("Echec et mat !");
+        } else {
+            System.out.println("Match nul !");
+        }
 
     }  
 
