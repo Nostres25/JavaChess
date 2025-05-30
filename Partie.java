@@ -54,13 +54,24 @@ public class Partie {
 
             Scanner scanner = new Scanner(System.in);
             // Possibilité de jouer d'un coup ou en deux questions
-            repondre(this.joueurActuel, "Que souhaitez-vous jouer ? (Par exemple, envoyez a1 pour déplacer la pièce présente sur la case a1)");
+            repondre(this.joueurActuel, "Que souhaitez-vous jouer ? Par exemple, envoyez a1 pour déplacer la pièce présente sur la case a1. Vous pouvez aussi répondre \"ff\" pour déclarer forfait");
             
             try {
                 // Utilisation de "replace" à la place de "trim" pour enlever l'espace entre deux cases
                 // Exemple: " a2 a4 " -> "a2a4"
                 // Il est peu probable qu'un autre caractère invisible soit inséré par l'utilisateur
                 String ligne = scanner.nextLine().replace(" ", "").toUpperCase();
+
+                // Déclarer forfait
+                if (ligne.equals("ff")) {
+                    Joueur joueurAdverse = this.getJoueurAdverse(this.joueurActuel);
+                    repondre(joueurAdverse, this.joueurActuel.getNom() + " veut déclarer forfait, acceptez vous ? (\"oui\" ou \"non\")");
+                    ligne = scanner.nextLine();
+                    if (ligne.equals("oui")) {
+                        this.joueurActuel = this.getJoueurAdverse(this.joueurActuel);
+                        break;
+                    } 
+                }
 
                 // Récupération de la case de départ et de la pièce à jouer
                 repondre(this.joueurActuel, "Quelle pièce voulez-vous déplacer ? (Par exemple, envoyez a1 pour déplacer le pion en a1)");
@@ -82,7 +93,7 @@ public class Partie {
                 // Le joueur peut aussi jouer en deux questions
                 if (caseArrivee == null) {
                     repondre(this.joueurActuel, "Vers quelle case voulez-vous déplacer votre " + caseDepart.getPiece().getNom() + " ? (exemple: a4)" );
-                    caseArrivee = this.getCase(scanner.nextLine().replace(" ", "")); // TODO revoir si faut re verif si c'est valide
+                    caseArrivee = this.getCase(scanner.nextLine().replace(" ", ""));
                 }
 
                 // Fin du scanner, la case de départ et la case d'arrivée ont été sélectionnés avec succès.
@@ -148,7 +159,9 @@ public class Partie {
 
         }
 
-        this.fin(enEchec);
+        String raison = "echec";
+        if (enEchec) raison = "Match nul"; 
+        this.fin(raison);
 
     }
 
@@ -185,7 +198,7 @@ public class Partie {
         return this.echiquier.getCase(colonne, ligne);
     }
 
-    //TODO Finir
+
     public Piece findObstacle(Case caseDepart, Case caseArrivee) {
         Piece piece = caseDepart.getPiece();
 
@@ -321,9 +334,12 @@ public class Partie {
     }
 
     //TODO Finir
-    public void fin(boolean enEchec) {
+    public void fin(String raison) {
 
-        if (enEchec) {
+        if (raison.equals("forfait")) {
+            repondre(this.getJoueurAdverse(this.joueurActuel), this.joueurActuel.getNom() + " a déclaré forfait, la partie est remportée par " + joueurAdverse.getNom() + " !");
+        }
+        if (raison.equals("echec")) {
             repondre(this.joueurActuel, "Echec et mat !");
         } else {
             repondre(this.joueurActuel, "Match nul !");
