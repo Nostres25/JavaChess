@@ -11,27 +11,28 @@ public abstract class Piece {
         this.icone = icone;
     }
 
-    public Couleur getcouleur() {
+    public Couleur getCouleur() {
         return this.couleur;
     }
 
-    public String getnom(){
+    public String getNom(){
         return this.nom;
     }
 
-    public char geticone(){
+    public char getIcone(){
         return this.icone;
     }
 
-    public Case getemplacement(){
+    public Case getCase(){
         return this.emplacement;
     }
 
     public abstract boolean deplacement ( Case destination);
 
-    @Override
-    public abstract String toString();
-
+     @Override
+    public String toString() {
+        return this.getNom() + " " + this.getCouleur() + " ("+this.getCase().getNumero()+")";
+    }
 
 
     }
