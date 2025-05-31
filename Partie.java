@@ -337,6 +337,10 @@ public class Partie {
             // TODO remplir la liste des pieces mangées et retirer le condition
         }
         caseDepart.getPiece().setCase(caseArrivee);
+
+        if (caseDepart.getPiece() instanceof Pion pion) {
+            if (!pion.aBouge()) pion.seDeplace();
+        }
     }
 
     //TODO Finir
@@ -352,5 +356,4 @@ public class Partie {
         }
 
     }  
-
 }
