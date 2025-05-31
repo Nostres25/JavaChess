@@ -4,10 +4,11 @@ public abstract class Piece {
     public char icone;
     public Case emplacement;
 
-    public Piece(Couleur couleur, Case emplacement) { 
-        this.couleur = couleur;
+    public Piece(Case emplacement,Couleur couleur,String nom,char icone ) { 
         this.emplacement = emplacement;
-
+        this.couleur = couleur;
+        this.nom = nom;
+        this.icone = icone;
     }
 
     public Couleur getcouleur() {
@@ -26,11 +27,10 @@ public abstract class Piece {
         return this.emplacement;
     }
 
-    public String getNomComplet(){
-        return this.icone + " " + this.nom; 
-    }
-
     public abstract boolean deplacement ( Case destination);
+
+    @Override
+    public abstract String toString();
 
 
 
