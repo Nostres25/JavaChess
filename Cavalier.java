@@ -4,6 +4,8 @@ public class Cavalier extends Piece {
          super(emplacement,couleur,"Cavalier",'C');
  
     }
+    
+    @Override
 
     public boolean deplacement ( Case destination){
 
