@@ -1,5 +1,5 @@
 public abstract class Piece {
-    
+
     public Couleur couleur;
     public String nom;
     public char icone;
@@ -26,6 +26,11 @@ public abstract class Piece {
 
     public Case getCase(){
         return this.emplacement;
+    }
+
+    public void setCase(Case nouvelleCase){
+        this.emplacement = nouvelleCase;
+        nouvelleCase.setPiece(this);
     }
 
     public abstract boolean deplacement ( Case destination);
