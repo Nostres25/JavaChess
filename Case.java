@@ -28,7 +28,7 @@ public class Case {
         return this.contenu;
     }
 
-    public String getNumero(Echiquier echiquier) {
+    public String getNumero() {
     char lettreColonne = Echiquier.getLettreColonne(this.colonne + 1); 
     int numeroLigne = this.ligne + 1; 
 
