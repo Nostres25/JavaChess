@@ -1,4 +1,5 @@
 public abstract class Piece {
+    
     public Couleur couleur;
     public String nom;
     public char icone;
