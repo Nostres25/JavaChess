@@ -1,6 +1,22 @@
 public class Echiquier {
 
+    private Case[][] cases; 
+
+    public Echiquier() {
+        this.cases = new Case[8][8];
+        
+    }
+
+        for ( int i = 0; i < 8; i++){
+            
+        }
+    
+
+
+
     public static int getNombreColonne(char lettre) {
+
+
         return switch (lettre) {
             case 'A' -> 1;
             case 'B' -> 2;
