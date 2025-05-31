@@ -4,9 +4,8 @@ public class Cavalier extends Piece {
          super(emplacement,couleur,"Cavalier",'C');
  
     }
-    
-    @Override
 
+    @Override
     public boolean deplacement ( Case destination){
 
         int colonne = this.getCase().getColonne();

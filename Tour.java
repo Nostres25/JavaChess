@@ -5,6 +5,7 @@ public class Tour extends Piece {
     }
 
     @Override
+    
     public boolean deplacement ( Case destination){
 
         return this.getCase().getColonne() == destination.getColonne() || this.getCase().getLigne() == destination.getLigne() ;
