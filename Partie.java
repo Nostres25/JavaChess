@@ -43,6 +43,9 @@ public class Partie {
     }
 
     public void commencer() {
+
+        System.out.println("- R -> Roi\n- E -> Reine\n- C -> Cavalier\n- F -> Fou\n- T -> Tour\n- P -> Pion ");
+
         Case caseDepart ;
         Case caseArrivee = null ;
         boolean enEchec = false;
