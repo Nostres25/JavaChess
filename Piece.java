@@ -36,9 +36,7 @@ public abstract class Piece {
         this.emplacement.setPiece(null);
         nouvellCase.setPiece(this);
         
-
     }
-
 
     public abstract boolean deplacement ( Case destination);
 
