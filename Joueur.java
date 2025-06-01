@@ -25,7 +25,7 @@ public class Joueur {
         if (couleur == Couleur.Noir) ligneDebut = 6;
         
         Echiquier echiquier = this.partie.getEchiquier(); 
-        for (int ligneI = ligneDebut; ligneI <= ligneI + 2; ligneI++) {
+        for (int ligneI = ligneDebut; ligneI <= ligneDebut + 1; ligneI++) {
             for (int caseI = 0; caseI < 8; caseI++) {
                 Piece piece = echiquier.getCase(caseI, ligneI).getPiece();
                 pieces.add(piece);
