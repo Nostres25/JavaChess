@@ -268,12 +268,13 @@ public class Partie {
         // Permet de tester si le roi est en echec à la suite d'un déplacement
 
         Piece pieceEcrasee = caseArrivee.getPiece();
-        caseDepart.getPiece().setCase(caseArrivee);
+        caseDepart.getPiece().deplacer(caseArrivee);
+        
 
         boolean enEchec = estEnEchec();
 
-        caseArrivee.getPiece().setCase(caseDepart);
-        if (pieceEcrasee != null) pieceEcrasee.setCase(caseArrivee);
+        caseArrivee.getPiece().deplacer(caseDepart);
+        if (pieceEcrasee != null) caseArrivee.setPiece(pieceEcrasee);
         
         return enEchec;
     }
@@ -339,7 +340,7 @@ public class Partie {
             if (!this.getJoueurAdverse(this.joueurActuel).getPieces().remove(pieceMangee)) System.err.println("La pièce mangée n'a pas été retirée de la liste des pièces du joueur adverse");
             // TODO remplir la liste des pieces mangées et retirer le condition
         }
-        caseDepart.getPiece().setCase(caseArrivee);
+        caseDepart.getPiece().deplacer(caseArrivee);
 
         if (caseDepart.getPiece() instanceof Pion pion) {
             if (!pion.aBouge()) pion.seDeplace();
