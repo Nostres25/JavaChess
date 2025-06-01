@@ -19,10 +19,10 @@ public class Joueur {
         // Ainsi que récupération du roi dans un attribut "roi" pour le récupérer rapidement également.
         this.pieces = new ArrayList<>();
 
-        // Récupération des pièces de toutes les cases des deux premières lignes de l'échiquier si le joueur joue les noirs
-        // ou des deux dernières lignes de l'échiquier si le joueur joue les blancs
+        // Récupération des pièces de toutes les cases des deux dernières lignes de l'échiquier si le joueur joue les noirs
+        // ou des deux premières lignes de l'échiquier si le joueur joue les blancs
         int ligneDebut = 0;
-        if (couleur == Couleur.Blanc) ligneDebut = 6;
+        if (couleur == Couleur.Noir) ligneDebut = 6;
         
         Echiquier echiquier = this.partie.getEchiquier(); 
         for (int ligneI = ligneDebut; ligneI <= ligneI + 2; ligneI++) {

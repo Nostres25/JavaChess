@@ -1,8 +1,8 @@
 
 public class Roi extends Piece {
 
-    public Roi(Couleur couleur, Case emplacement) {
-        super(emplacement, couleur, "Roi", 'R');
+    public Roi(Couleur couleur) {
+        super(couleur, "Roi", 'R');
     }
 
     public boolean deplacement(Case destination) {
