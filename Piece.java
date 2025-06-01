@@ -11,6 +11,7 @@ public abstract class Piece {
         this.icone = icone;
     }
 
+
     public Couleur getCouleur() {
         return this.couleur;
     }
@@ -29,8 +30,15 @@ public abstract class Piece {
 
     public void setCase(Case nouvelleCase){
         this.emplacement = nouvelleCase;
-        nouvelleCase.setPiece(this);
     }
+
+    public void deplacer(Case nouvellCase){
+        this.emplacement.setPiece(null);
+        nouvellCase.setPiece(this);
+        
+
+    }
+
 
     public abstract boolean deplacement ( Case destination);
 
