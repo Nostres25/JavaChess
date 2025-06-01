@@ -41,7 +41,7 @@ public class Case {
 
     public void setPiece(Piece piece){
         this.contenu = piece; 
-        piece.setCase(this);
+        if (piece != null) piece.setCase(this);
     }
 
 
