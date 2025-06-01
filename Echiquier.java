@@ -18,6 +18,21 @@ public class Echiquier {
              
         }
 
+        // Pièces de couleur blanche 
+
+        this.cases[0][4].setPiece(new Roi(Couleur.Blanc));
+        this.cases[0][3].setPiece(new Reine(Couleur.Blanc));
+        this.cases[0][2].setPiece(new Fou(Couleur.Blanc));
+        this.cases[0][5].setPiece(new Fou(Couleur.Blanc));
+        this.cases[0][1].setPiece(new Cavalier(Couleur.Blanc));
+        this.cases[0][6].setPiece(new Cavalier(Couleur.Blanc));
+        this.cases[0][0].setPiece(new Tour(Couleur.Blanc)); 
+        this.cases[0][7].setPiece(new Tour(Couleur.Blanc));
+
+        for (Case aCase : this.cases[1]) {
+            aCase.setPiece(new Pion(Couleur.Blanc));
+        }
+        
 
         // Pièces de couleur noire 
 
@@ -34,23 +49,6 @@ public class Echiquier {
         for (Case aCase : this.cases[6]) {
             aCase.setPiece(new Pion(Couleur.Noir));
         }
-
-
-        // Pièces de couleur blanche 
-
-        this.cases[0][4].setPiece(new Roi(Couleur.Blanc));
-        this.cases[0][3].setPiece(new Reine(Couleur.Blanc));
-        this.cases[0][2].setPiece(new Fou(Couleur.Blanc));
-        this.cases[0][5].setPiece(new Fou(Couleur.Blanc));
-        this.cases[0][1].setPiece(new Cavalier(Couleur.Blanc));
-        this.cases[0][6].setPiece(new Cavalier(Couleur.Blanc));
-        this.cases[0][0].setPiece(new Tour(Couleur.Blanc)); 
-        this.cases[0][7].setPiece(new Tour(Couleur.Blanc));
-
-        for (Case aCase : this.cases[1]) {
-            aCase.setPiece(new Pion(Couleur.Blanc));
-        }
-        
     }
 
 
