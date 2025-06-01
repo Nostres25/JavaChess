@@ -29,13 +29,16 @@ public class Pion extends Piece {
         int ligneDiff = destination.getLigne() - ligne;  
         int ligneDiffAbs = Math.abs(ligneDiff);                                                          
         
-        return (this.getCouleur() == Couleur.Blanc && ligneDiff > 0 || this.getCouleur() == Couleur.Noir && ligneDiff < 0) &&
+        return 
+            (this.getCouleur() == Couleur.Blanc && ligneDiff > 0 || 
+                this.getCouleur() == Couleur.Noir && ligneDiff < 0) &&
 
-        (!this.premierDeplacement && ligneDiffAbs == 2)|| ligneDiffAbs == 1 && 
+            ((!this.premierDeplacement && ligneDiffAbs == 2) || ligneDiffAbs == 1) && 
 
-        destination.getPiece() == null || ligneDiffAbs == Math.abs(colonneDiff) && destination.getPiece().getCouleur() == Partie.getCouleurOpposee(this.couleur) && ligneDiffAbs == 1; 
-
-
+            (destination.getPiece() == null ||
+                (ligneDiffAbs == Math.abs(colonneDiff) && 
+                    destination.getPiece().getCouleur() == Partie.getCouleurOpposee(this.couleur) &&
+                        ligneDiffAbs == 1)); 
     }
 }
 
