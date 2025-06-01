@@ -302,7 +302,7 @@ public class Partie {
 
         String affichage = "";
         Case[][] cases = this.echiquier.getCases();
-        for (int ligneI = 0; ligneI < cases.length; ligneI++) {
+        for (int ligneI = cases.length; ligneI >= 0; ligneI--) {
 
             // Écriture d'une nouvelle ligne
             affichage += "\n" + ligneI+1 + " |";
