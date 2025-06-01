@@ -1,7 +1,7 @@
 public class Tour extends Piece {
 
-    public Tour (Couleur couleur, Case emplacement){
-        super(emplacement,couleur,"Tour",'T');
+    public Tour (Couleur couleur){
+        super(couleur,"Tour",'T');
     }
 
     @Override

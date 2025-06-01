@@ -5,8 +5,7 @@ public abstract class Piece {
     public char icone;
     public Case emplacement;
 
-    public Piece(Case emplacement,Couleur couleur,String nom,char icone ) { 
-        this.setCase(emplacement);
+    public Piece(Couleur couleur,String nom,char icone ) { 
         this.couleur = couleur;
         this.nom = nom;
         this.icone = icone;
