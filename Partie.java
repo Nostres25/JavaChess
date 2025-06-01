@@ -17,6 +17,11 @@ public class Partie {
         this(partie.getJoueur(Couleur.Blanc).getNom(), partie.getJoueur(Couleur.Noir).getNom());
     }
 
+    public static Couleur getCouleurOpposee(Couleur couleur) {
+        if (couleur == Couleur.Blanc) return Couleur.Noir;
+        else return Couleur.Blanc;
+    }
+
     public static void nouvellePartie() {
         try {
             System.out.println("Création d'une nouvelle partie d'echec...");
@@ -187,11 +192,7 @@ public class Partie {
     }
 
     public Joueur getJoueurAdverse(Joueur joueur) {
-        if (this.joueurActuel.getCouleur() == Couleur.Blanc) {
-            return joueurNoir;
-        } else {
-            return joueurBlanc;
-        }
+        return this.getJoueur(getCouleurOpposee(joueur.getCouleur()));
     }
 
     public Echiquier getEchiquier() {
