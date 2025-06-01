@@ -2,8 +2,8 @@ public class Pion extends Piece {
 
         private boolean premierDeplacement;
 
-        public Pion (Couleur couleur, Case emplacement){
-        super(emplacement,couleur,"Pion",'P');
+        public Pion (Couleur couleur){
+        super(couleur,"Pion",'P');
         this.premierDeplacement = false; 
     }
 
@@ -26,23 +26,14 @@ public class Pion extends Piece {
         int colonne = this.getCase().getColonne();                                                                                                  
         int ligne = this.getCase().getLigne();
         int colonneDiff = destination.getColonne() - colonne;      
-        int ligneDiff = destination.getLigne() - ligne;                                                           
+        int ligneDiff = destination.getLigne() - ligne;  
+        int ligneDiffAbs = Math.abs(ligneDiff);                                                          
         
-        return (this.getCouleur() == Couleur.Blanc && ligneDiff < 0 || this.getCouleur() == Couleur.Noir && ligneDiff > 0) &&
+        return (this.getCouleur() == Couleur.Blanc && ligneDiff > 0 || this.getCouleur() == Couleur.Noir && ligneDiff < 0) &&
 
-        Math.abs(ligneDiff) == Math.abs(colonneDiff)
+        (!this.premierDeplacement && ligneDiffAbs == 2)|| ligneDiffAbs == 1 && 
 
-        return destination.getLigne() - ligne  == -1 && this.getCouleur() == Couleur.Blanc || destination.getLigne() - ligne  == 1 && this.getCouleur() == Couleur.Noir ||
-
-
-        (destination.getLigne() - ligne  == 2 && this.getCouleur() == Couleur.Blanc || destination.getLigne() - ligne  == 2 && this.getCouleur() == Couleur.Noir) && !premierDeplacement || 
-
-
-
-
-
-        
-
+        destination.getPiece() == null || ligneDiffAbs == Math.abs(colonneDiff) && destination.getPiece().getCouleur() == Partie.getCouleurOpposee(this.couleur) && ligneDiffAbs == 1; 
 
 
     }
@@ -50,4 +41,4 @@ public class Pion extends Piece {
 
 
     
-}
+
