@@ -77,7 +77,7 @@ public class Echiquier {
             case 'F' -> 6;
             case 'G' -> 7;
             case 'H' -> 8;
-            default -> 0;
+            default -> -1;
         };
     }
 
