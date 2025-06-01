@@ -129,7 +129,7 @@ public class Partie {
 
                 // Une autre pièce ne doit pas empêcher le déplacement selon les règles du jeu
                 if (obstacle != null) {
-                    repondre(this.joueurActuel, "La piece " + obstacle.getNomComplet() + " fait obstacle en " + piece.getCase().getNumero() + ".");
+                    repondre(this.joueurActuel, "La piece " + obstacle + " fait obstacle en " + piece.getCase().getNumero() + ".");
                     caseArrivee = null;
                     continue;
                 }
@@ -143,7 +143,7 @@ public class Partie {
                 // Validation du coup et changement de tour
                 this.validerCoup(caseDepart, caseArrivee);
 
-                repondre(this.joueurActuel, "Coup joué : " + piece.getNomComplet() + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
+                repondre(this.joueurActuel, "Coup joué : " + piece + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
 
                 this.joueurActuel = this.getJoueurAdverse(this.joueurActuel);
 
@@ -202,7 +202,7 @@ public class Partie {
     public Case getCase(String numeroCase) throws NumberFormatException, IndexOutOfBoundsException {
         // numeroCase doit être dans le format <LETTRE_COLONNE><numéroLigne>
         // Exemple: "A2" pour la case à la colonne a et sur la ligne 2
-        int colonne = getColonne(numeroCase.charAt(0));
+        int colonne = Echiquier.getNombreColonne(numeroCase.charAt(0));
         int ligne = Integer.parseInt(numeroCase.charAt(1)+"");
 
         return this.echiquier.getCase(colonne, ligne);
@@ -214,12 +214,12 @@ public class Partie {
 
         // Une pièce du même camp ne doit pas être dans la case d'arrivée
         Piece obstacle = caseArrivee.getPiece();
-        if (obstacle != null && obstacle.getColor() == piece.getColor()) {
+        if (obstacle != null && obstacle.getCouleur() == piece.getCouleur()) {
             return obstacle;
         }
 
         //TODO pourquoi ne pas utiliser instanceof ? 
-        if (piece.getNom() == "Cavalier") return null;
+        if (piece.getNom().equals("Cavalier")) return null;
 
         // Partir de la case d'arrivée pour aller jusqu'à la case de départ
         int ligneI = caseArrivee.getLigne();
@@ -289,7 +289,7 @@ public class Partie {
                 // Vérifier pour toutes les pièces jouables si la case est accessible et sans obstacle
                 for (Piece pieceTestee : this.joueurActuel.getPieces()) {
 
-                    if (pieceTestee.deplacement(caseTestee) && !this.findObstacle(pieceTestee.getCase(), caseTestee)) {
+                    if (pieceTestee.deplacement(caseTestee) && this.findObstacle(pieceTestee.getCase(), caseTestee) == null) {
                         // Verifier si le roi est en echec si la pièce testée est déplacée à la case testée
                         if (!this.estEnEchec(pieceTestee.getCase(), caseTestee)) return false;
                     }
@@ -313,12 +313,12 @@ public class Partie {
 
                 //Écriture d'une nouvelle case
                 Piece piece = cases[ligneI][caseI].getPiece();
-                char contenu ;
-                if (piece == null) contenu = ' ';
+                String contenu ;
+                if (piece == null) contenu = " ";
                 else if (piece.getCouleur() == Couleur.Noir) {
                     contenu = "\u001B[30m"+piece.getIcone();
                 } else {
-                    contenu = piece.getIcon();
+                    contenu = piece.getIcone()+"";
                 }
                 
 
@@ -352,7 +352,7 @@ public class Partie {
     public void fin(String raison) {
 
         if (raison.equals("forfait")) {
-            repondre(this.getJoueurAdverse(this.joueurActuel), this.joueurActuel.getNom() + " a déclaré forfait, la partie est remportée par " + joueurAdverse.getNom() + " !");
+            repondre(this.getJoueurAdverse(this.joueurActuel), this.joueurActuel.getNom() + " a déclaré forfait, la partie est remportée par " + this.getJoueurAdverse(this.joueurActuel).getNom() + " !");
         }
         if (raison.equals("echec")) {
             repondre(this.joueurActuel, "Echec et mat !");
