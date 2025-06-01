@@ -97,7 +97,11 @@ public class Partie {
                         this.joueurActuel = this.getJoueurAdverse(this.joueurActuel);
                         fin("forfait");
                         return;
-                    } 
+                    } else {
+                        Affichage.erreur(this.joueurActuel, this.getJoueurAdverse(this.joueurActuel).getNom() + " a refusé la victoire par forfait.");
+                        demanderAction(enEchec);
+                        return;
+                    }
                 }
 
                 // Récupération de la case de départ et de la pièce à jouer
@@ -354,7 +358,7 @@ public class Partie {
     public void fin(String raison) {
 
         if (raison.equals("forfait")) {
-            Affichage.info(this.getJoueurAdverse(this.joueurActuel), this.joueurActuel.getNom() + " a déclaré forfait, la partie est remportée par " + this.getJoueurAdverse(this.joueurActuel).getNom() + " !");
+            Affichage.info(this.joueurActuel, this.getJoueurAdverse(this.joueurActuel).getNom() + " a déclaré forfait, la partie est remportée par " + this.joueurActuel.getNom() + " !");
         }
         if (raison.equals("echec")) {
             Affichage.info(this.joueurActuel, "Echec et mat !");

@@ -29,6 +29,9 @@ public class Pion extends Piece {
         int ligneDiff = destination.getLigne() - ligne;  
         int ligneDiffAbs = Math.abs(ligneDiff);                                                          
         
+
+        //TODO à fix la possibilité de se déplacer en diagonale constamment
+        
         return 
             (this.getCouleur() == Couleur.Blanc && ligneDiff > 0 || 
                 this.getCouleur() == Couleur.Noir && ligneDiff < 0) &&
