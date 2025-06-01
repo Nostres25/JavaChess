@@ -25,12 +25,12 @@ public class Partie {
     public static void nouvellePartie() {
         try {
             System.out.println("Création d'une nouvelle partie d'echec...");
-            System.out.println("Entrez le nom du joueur 1 qui jouera les blancs:");
+            System.out.println(Affichage.bleu("Entrez le nom du joueur qui jouera les ")+"blancs:");
             Scanner scanner = new Scanner(System.in);
             
             String nomJoueur1 = scanner.nextLine();
 
-            System.out.println("Entrez le nom du joueur 2 qui jouera les noirs:");
+            System.out.println(Affichage.bleu("Entrez le nom du joueur qui jouera les ")+Affichage.noirf("noirs:"));
             String nomJoueur2 = scanner.nextLine();
 
             System.out.println("- R -> Roi\n- E -> Reine\n- C -> Cavalier\n- F -> Fou\n- T -> Tour\n- P -> Pion ");
@@ -44,24 +44,12 @@ public class Partie {
 
     }
 
-    public static void repondre(Joueur joueur, String message) {
-        System.out.println("-> " + joueur.getNom() + " (" + joueur.getCouleur() + ") : " + message);
-    }
-
-    public static void erreur(Joueur joueur, String message) {
-        repondre(joueur, "\u001B[31m" + message + "\u001B[0m");
-    }
-
-    public static void question(Joueur joueur, String message) {
-        repondre(joueur, "\u001B[33m" + message + "\u001B[0m");
-    }
-
     public boolean estDeplacementValide(Piece piece, Case caseArrivee) {
 
                 // Verification du déplacement de la pièce.
                 // La pièce doit pouvoir atteindre la case selon les règles du jeu.
                 if (!piece.deplacement(caseArrivee)) {
-                    erreur(this.joueurActuel, "La pièce " + piece.getNom() + " ne peut pas effectuer un tel déplacement !");
+                    Affichage.erreur(this.joueurActuel, "La pièce " + piece.getNom() + " ne peut pas effectuer un tel déplacement !");
                     // TODO peut-être ajouter un piece.getRegle() 
                     // pour un message d'erreur personnalisé en fonction du type de pièce
                     // exemple: Une tour ne peut que se déplacer en ligne droite !
@@ -73,12 +61,12 @@ public class Partie {
 
                 // Une autre pièce ne doit pas empêcher le déplacement selon les règles du jeu
                 if (obstacle != null) {
-                    erreur(this.joueurActuel, "La piece " + obstacle + " fait obstacle en " + obstacle.getCase().getNumero() + ".");
+                    Affichage.erreur(this.joueurActuel, "La piece " + obstacle + " fait obstacle en " + obstacle.getCase().getNumero() + ".");
                     return false;
                 }
 
                 if (estEnEchec(piece.getCase(), caseArrivee)) {
-                    erreur(this.joueurActuel, "Vous ne pouvez pas effectuer ce déplacement, votre roi serait en echec");
+                    Affichage.erreur(this.joueurActuel, "Vous ne pouvez pas effectuer ce déplacement, votre roi serait en echec");
                     return false;
                 }
 
@@ -92,7 +80,7 @@ public class Partie {
         // Exemple: " a2 a4 " -> "a2a4"
         // Il est peu probable qu'un autre caractère invisible soit inséré par l'utilisateur
         
-        question(this.joueurActuel, "Que souhaitez-vous jouer ? Par exemple, envoyez a1 pour déplacer la pièce présente sur la case a1. Vous pouvez aussi répondre \"ff\" pour déclarer forfait");
+        Affichage.question(this.joueurActuel, "Que souhaitez-vous jouer ?"," Par exemple, envoyez a1 pour déplacer la pièce présente sur la case a1. Vous pouvez aussi répondre \"ff\" pour déclarer forfait");
 
         String ligne = scanner.nextLine().replace(" ", "").toUpperCase();
 
@@ -103,7 +91,7 @@ public class Partie {
                 // Déclarer forfait
                 if (ligne.equals("FF")) {
                     Joueur joueurAdverse = this.getJoueurAdverse(this.joueurActuel);
-                    question(joueurAdverse, this.joueurActuel.getNom() + " veut déclarer forfait, acceptez vous ? (\"oui\" ou \"non\")");
+                    Affichage.question(joueurAdverse, this.joueurActuel.getNom() + " veut déclarer forfait, acceptez vous ? (\"oui\" ou \"non\")", "");
                     ligne = scanner.nextLine();
                     if (ligne.equals("oui")) {
                         this.joueurActuel = this.getJoueurAdverse(this.joueurActuel);
@@ -118,7 +106,7 @@ public class Partie {
 
                 // Le joueur doit avoir une pièce à la case sélectionnée
                 if (piece == null || this.joueurActuel.getCouleur() != piece.getCouleur()) {
-                    erreur(this.joueurActuel, "Vous n'avez pas de pièce à la case " + caseDepart.getNumero());
+                    Affichage.erreur(this.joueurActuel, "Vous n'avez pas de pièce à la case " + caseDepart.getNumero());
                     demanderAction(enEchec);
                     return;
                 }
@@ -133,7 +121,7 @@ public class Partie {
 
                 // Le joueur peut aussi jouer en deux questions
                 if (caseArrivee == null) {
-                    question(this.joueurActuel, "Vers quelle case voulez-vous déplacer votre " + caseDepart.getPiece() + " ? (exemple: a4)" );
+                    Affichage.question(this.joueurActuel, "Vers quelle case voulez-vous déplacer votre " + caseDepart.getPiece() + " ?"," (exemple: a4)" );
                     caseArrivee = this.getCase(scanner.nextLine().replace(" ", "").toUpperCase());
                 }
 
@@ -142,7 +130,7 @@ public class Partie {
 
                 // Sécurité concernant la possibilité de ne pas se déplacer
                 if (caseArrivee.equals(caseDepart)) {
-                    erreur(this.joueurActuel, "Vous ne pouvez pas rester sur la même case !");
+                    Affichage.erreur(this.joueurActuel, "Vous ne pouvez pas rester sur la même case !");
                     demanderAction(enEchec);
                     return;
                 }
@@ -158,18 +146,18 @@ public class Partie {
                 this.changerDeTour();
 
              } catch (NoSuchElementException e) {
-                erreur(this.joueurActuel, "Veuillez entrer un numéro de case !");
+                Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case !");
                 demanderAction(enEchec);
             } catch (IndexOutOfBoundsException e) {
                 //TODO cette erreur est survenue anormalement à un moment
-                erreur(this.joueurActuel, "Veuillez entrer un numéro de case valide !");
-                demanderAction(enEchec);
+                Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case valide !");
                 e.printStackTrace();
+                demanderAction(enEchec);
             } catch (NumberFormatException e) {
-                erreur(this.joueurActuel, "Veuillez préciser un chiffre pour localiser la ligne. (et une lettre pour la colonne)");
+                Affichage.erreur(this.joueurActuel, "Veuillez préciser un chiffre pour localiser la ligne. (et une lettre pour la colonne)");
                 demanderAction(enEchec);
             } catch (Exception e) {
-                System.err.println("\u001B[41mUne erreur inattendue est survenue !\u001B[0m");
+                System.err.println(Affichage.font_rouge("Une erreur inattendue est survenue !"));
                 e.printStackTrace(System.out);
                 demanderAction(enEchec);
             }
@@ -185,10 +173,7 @@ public class Partie {
             enEchec = this.estEnEchec(); 
         }
                 
-        this.actualiserAffichage();
-        if (enEchec) erreur(this.joueurActuel, "\033[1;31mEchec !!\033[0m");
-        System.out.println("Au tour de " + this.joueurActuel.getNom() +" !");
-
+        Affichage.actualiserAffichage(this, enEchec);
 
         if (isFin()) {
 
@@ -281,6 +266,10 @@ public class Partie {
             colonneI += colonneDirection;
 
             // Si un obstacle est trouvé, le retourner (n'importe quelle pièce sur le chemin)
+
+            //TODO vérifier ici parfois colonneI ou ligneI = -1 (ex: echec et matt). Voir peut-être pour quelles cases
+
+            System.out.println("findObstacle -> CaseArrivee: " + caseArrivee.getNumero() +" CaseDepart: " + caseDepart.getNumero() + " ligneDiff: " + ligneDiff + " colonneDiff: " + colonneDiff + " ligneDirection: " + ligneDirection + " colonneDirection: " + colonneDirection + " ligneDerniereCase: " + ligneDerniereCase + " colonneDireniereCase: " + colonneDerniereCase + " ligneI: " + ligneI + " colonneI: " + colonneI);
             obstacle = this.echiquier.getCase(colonneI, ligneI).getPiece();
 
             if (obstacle != null) return obstacle;
@@ -340,43 +329,6 @@ public class Partie {
         return true;
     }
 
-    //TODO Finir
-    public void actualiserAffichage() { 
-
-        String affichage = "    A  B  C  D  E  F  G  H";
-        Case[][] cases = this.echiquier.getCases();
-        for (int ligneI = cases.length - 1; ligneI >= 0; ligneI--) {
-
-            // Écriture d'une nouvelle ligne
-            int ligneAffichee = ligneI+1;
-            affichage += "\n" + (ligneAffichee) + " |";
-
-            for (int caseI = 0; caseI < cases[ligneI].length; caseI++) {
-
-                //Écriture d'une nouvelle case
-                Piece piece = cases[ligneI][caseI].getPiece();
-                String contenu ;
-                if (piece == null) contenu = " ";
-                else if (piece.getCouleur() == Couleur.Noir) {
-                    contenu = "\u001B[30m"+piece.getIcone();
-                } else {
-                    contenu = piece.getIcone()+"";
-                }
-                
-
-                if ((ligneI%2 == 0 && caseI%2 == 0) || (ligneI%2 != 0 && caseI%2 != 0)) {
-                    affichage += "\u001B[47m " + contenu + " \u001B[0m";
-                } else {
-                    affichage += " " + contenu + " ";
-                }
-            }
-
-            affichage += "\u001B[0m| " + ligneAffichee;
-        }
-
-        affichage += "\n    A  B  C  D  E  F  G  H";
-        System.out.println(affichage);
-    }
 
     public void validerCoup(Case caseDepart, Case caseArrivee) {
         Piece pieceDeplacee = caseDepart.getPiece();
@@ -395,19 +347,19 @@ public class Partie {
             System.out.println(pieceDeplacee + " a bougé : " + pion.aBouge());
         }
 
-        repondre(this.joueurActuel, "Coup joué : " + pieceDeplacee + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
+        Affichage.info(this.joueurActuel, "Coup joué : " + pieceDeplacee + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
     }
 
     //TODO Finir
     public void fin(String raison) {
 
         if (raison.equals("forfait")) {
-            repondre(this.getJoueurAdverse(this.joueurActuel), this.joueurActuel.getNom() + " a déclaré forfait, la partie est remportée par " + this.getJoueurAdverse(this.joueurActuel).getNom() + " !");
+            Affichage.info(this.getJoueurAdverse(this.joueurActuel), this.joueurActuel.getNom() + " a déclaré forfait, la partie est remportée par " + this.getJoueurAdverse(this.joueurActuel).getNom() + " !");
         }
         if (raison.equals("echec")) {
-            repondre(this.joueurActuel, "Echec et mat !");
+            Affichage.info(this.joueurActuel, "Echec et mat !");
         } else {
-            repondre(this.joueurActuel, "Match nul !");
+            Affichage.info(this.joueurActuel, "Match nul !");
         }
 
     }  
