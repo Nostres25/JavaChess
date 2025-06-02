@@ -39,7 +39,6 @@ public abstract class Affichage {
         affichage += "\n    A  B  C  D  E  F  G  H";
         System.out.println(affichage);
         if (enEchec) critique(partie.getJoueurActuel(), "Echec !!");
-        info(partie.getJoueurActuel(), "Au tour de " + partie.getJoueurActuel().getNom() +" !");
 
     }
 
