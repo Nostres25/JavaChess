@@ -181,8 +181,8 @@ public class Partie {
 
         if (isFin()) {
 
-            String raison = "echec";
-            if (enEchec) raison = "Match nul";
+            String raison = "Match nul";
+            if (enEchec) raison = "echec";
  
             fin(raison);
             return;
