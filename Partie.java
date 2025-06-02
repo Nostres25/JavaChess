@@ -33,9 +33,24 @@ public class Partie {
             System.out.println(Affichage.bleu("Entrez le nom du joueur qui jouera les ")+Affichage.noirf("noirs:"));
             String nomJoueur2 = scanner.nextLine();
 
-            System.out.println("- R -> Roi\n- D -> Dame\n- C -> Cavalier\n- F -> Fou\n- T -> Tour\n- P -> Pion ");
-    
-            new Partie(nomJoueur1, nomJoueur2).changerDeTour();
+            Partie partie = new Partie(nomJoueur1, nomJoueur2);
+
+            System.out.println(Affichage.jaune("Souhaitez-vous essayer le mode d'affichage experimentale ? Le jeu sera bien plus facile à lire mais il se pourrait qu'il ne fonctionne pas dans votre terminal, notamment si vous êtes sur windows ! (envoyer \"oui\" pour essayer, \"non\" sinon)"));
+            String reponse_beta = scanner.nextLine();
+            if (reponse_beta.equalsIgnoreCase("oui")) {
+                for (Piece piecesBlanches : partie.getJoueur(Couleur.Blanc).getPieces()) {
+                    piecesBlanches.setIcone(Affichage.getIcone(piecesBlanches));
+                }
+
+                for (Piece piecesNoires : partie.getJoueur(Couleur.Noir).getPieces()) {
+                    piecesNoires.setIcone(Affichage.getIcone(piecesNoires));
+                }
+
+            } else {
+                System.out.println("- R -> Roi\n- D -> Dame\n- C -> Cavalier\n- F -> Fou\n- T -> Tour\n- P -> Pion ");
+            }
+            
+            partie.changerDeTour();
             
         } catch (Exception e) {
             System.err.println("Une erreur est survenue au lancement de la partie !");

@@ -108,4 +108,28 @@ public abstract class Affichage {
     public static String font_bleu(String message) {
         return "\033[45m" + message + RESET;
     }
+
+    public static char getIcone(Piece piece) {
+        if (piece.getCouleur() == Couleur.Blanc) {
+            return switch (piece.getNom()) {
+                case "Pion" -> '♙';
+                case "Cavalier" -> '♘';
+                case "Roi" -> '♔';
+                case "Dame" -> '♕';
+                case "Fou" -> '♗';
+                case "Tour" -> '♖';
+                default -> '?';
+            };
+        } else {
+            return switch (piece.getNom()) {
+                case "Pion" -> '♟';
+                case "Cavalier" -> '♞';
+                case "Roi" -> '♚';
+                case "Dame" -> '♛';
+                case "Fou" -> '♝';
+                case "Tour" -> '♜';
+                default -> '?';
+            };
+        }
+    }
 }
