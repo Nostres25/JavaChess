@@ -33,7 +33,7 @@ public class Partie {
             System.out.println(Affichage.bleu("Entrez le nom du joueur qui jouera les ")+Affichage.noirf("noirs:"));
             String nomJoueur2 = scanner.nextLine();
 
-            System.out.println("- R -> Roi\n- E -> Reine\n- C -> Cavalier\n- F -> Fou\n- T -> Tour\n- P -> Pion ");
+            System.out.println("- R -> Roi\n- D -> Dame\n- C -> Cavalier\n- F -> Fou\n- T -> Tour\n- P -> Pion ");
     
             new Partie(nomJoueur1, nomJoueur2).changerDeTour();
             
@@ -346,9 +346,7 @@ public class Partie {
         }
 
         if (pieceDeplacee instanceof Pion pion) {
-            System.out.println(pieceDeplacee + " va bouger : " + pion.aBouge());
             if (!pion.aBouge()) pion.seDeplace();
-            System.out.println(pieceDeplacee + " a bougé : " + pion.aBouge());
         }
 
         Affichage.info(this.joueurActuel, "Coup joué : " + pieceDeplacee.getNom() + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
