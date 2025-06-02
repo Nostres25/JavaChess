@@ -21,7 +21,7 @@ public class Echiquier {
         // Pièces de couleur blanche 
 
         this.cases[0][4].setPiece(new Roi(Couleur.Blanc));
-        this.cases[0][3].setPiece(new Reine(Couleur.Blanc));
+        this.cases[0][3].setPiece(new Dame(Couleur.Blanc));
         this.cases[0][2].setPiece(new Fou(Couleur.Blanc));
         this.cases[0][5].setPiece(new Fou(Couleur.Blanc));
         this.cases[0][1].setPiece(new Cavalier(Couleur.Blanc));
@@ -37,7 +37,7 @@ public class Echiquier {
         // Pièces de couleur noire 
 
         this.cases[7][4].setPiece(new Roi(Couleur.Noir));
-        this.cases[7][3].setPiece(new Reine(Couleur.Noir));
+        this.cases[7][3].setPiece(new Dame(Couleur.Noir));
         this.cases[7][2].setPiece(new Fou(Couleur.Noir));
         this.cases[7][5].setPiece(new Fou(Couleur.Noir));
         this.cases[7][1].setPiece(new Cavalier(Couleur.Noir));

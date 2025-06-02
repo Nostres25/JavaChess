@@ -33,9 +33,24 @@ public class Partie {
             System.out.println(Affichage.bleu("Entrez le nom du joueur qui jouera les ")+Affichage.noirf("noirs:"));
             String nomJoueur2 = scanner.nextLine();
 
-            System.out.println("- R -> Roi\n- E -> Reine\n- C -> Cavalier\n- F -> Fou\n- T -> Tour\n- P -> Pion ");
-    
-            new Partie(nomJoueur1, nomJoueur2).changerDeTour();
+            Partie partie = new Partie(nomJoueur1, nomJoueur2);
+
+            System.out.println(Affichage.jaune("Souhaitez-vous essayer le mode d'affichage experimentale ? Le jeu sera bien plus facile à lire mais il se pourrait qu'il ne fonctionne pas dans votre terminal, notamment si vous êtes sur windows ! (envoyer \"oui\" pour essayer, \"non\" sinon)"));
+            String reponse_beta = scanner.nextLine();
+            if (reponse_beta.equalsIgnoreCase("oui")) {
+                for (Piece piecesBlanches : partie.getJoueur(Couleur.Blanc).getPieces()) {
+                    piecesBlanches.setIcone(Affichage.getIcone(piecesBlanches));
+                }
+
+                for (Piece piecesNoires : partie.getJoueur(Couleur.Noir).getPieces()) {
+                    piecesNoires.setIcone(Affichage.getIcone(piecesNoires));
+                }
+
+            } else {
+                System.out.println("- R -> Roi\n- D -> Dame\n- C -> Cavalier\n- F -> Fou\n- T -> Tour\n- P -> Pion ");
+            }
+            
+            partie.changerDeTour();
             
         } catch (Exception e) {
             System.err.println("Une erreur est survenue au lancement de la partie !");
@@ -75,19 +90,18 @@ public class Partie {
 
     public void demanderAction(boolean enEchec) {
 
-        Scanner scanner = new Scanner(System.in);
-        // Utilisation de "replace" à la place de "trim" pour enlever l'espace entre deux cases
-        // Exemple: " a2 a4 " -> "a2a4"
-        // Il est peu probable qu'un autre caractère invisible soit inséré par l'utilisateur
-        
-        Affichage.question(this.joueurActuel, "Que souhaitez-vous jouer ?"," Par exemple, envoyez a1 pour déplacer la pièce présente sur la case a1. Vous pouvez aussi répondre \"ff\" pour déclarer forfait");
 
-        String ligne = scanner.nextLine().replace(" ", "").toUpperCase();
-
-        
         // Possibilité de jouer d'un coup ou en deux questions
-        
         try {
+                Scanner scanner = new Scanner(System.in);
+        
+                Affichage.question(this.joueurActuel, "Que souhaitez-vous jouer ?"," Par exemple, envoyez a1 pour déplacer la pièce présente sur la case a1. Vous pouvez aussi répondre \"ff\" pour déclarer forfait");
+
+                // Utilisation de "replace" à la place de "trim" pour enlever l'espace entre deux cases
+                // Exemple: " a2 a4 " -> "a2a4"
+                // Il est peu probable qu'un autre caractère invisible soit inséré par l'utilisateur
+                
+                String ligne = scanner.nextLine().replace(" ", "").toUpperCase();
                 // Déclarer forfait
                 if (ligne.equals("FF")) {
                     Joueur joueurAdverse = this.getJoueurAdverse(this.joueurActuel);
@@ -153,9 +167,9 @@ public class Partie {
                 Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case !");
                 demanderAction(enEchec);
             } catch (IndexOutOfBoundsException e) {
-                //TODO cette erreur est survenue anormalement à un moment
+                //TODO cette erreur est survenue anormalement à un moment - corrigee ???
                 Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case valide !");
-                e.printStackTrace();
+                //e.printStackTrace();
                 demanderAction(enEchec);
             } catch (NumberFormatException e) {
                 Affichage.erreur(this.joueurActuel, "Veuillez préciser un chiffre pour localiser la ligne. (et une lettre pour la colonne)");
@@ -188,6 +202,7 @@ public class Partie {
             return;
         }
 
+        Affichage.info(this.getJoueurActuel(), "Au tour de " + this.getJoueurActuel().getNom() +" !");
         demanderAction(enEchec);
     }
 
@@ -273,7 +288,7 @@ public class Partie {
 
             //TODO vérifier ici parfois colonneI ou ligneI = -1 (ex: echec et matt). Voir peut-être pour quelles cases
 
-            System.out.println("findObstacle -> CaseArrivee: " + caseArrivee.getNumero() +" CaseDepart: " + caseDepart.getNumero() + " ligneDiff: " + ligneDiff + " colonneDiff: " + colonneDiff + " ligneDirection: " + ligneDirection + " colonneDirection: " + colonneDirection + " ligneDerniereCase: " + ligneDerniereCase + " colonneDireniereCase: " + colonneDerniereCase + " ligneI: " + ligneI + " colonneI: " + colonneI);
+            //System.out.println("findObstacle -> CaseArrivee: " + caseArrivee.getNumero() +" CaseDepart: " + caseDepart.getNumero() + " ligneDiff: " + ligneDiff + " colonneDiff: " + colonneDiff + " ligneDirection: " + ligneDirection + " colonneDirection: " + colonneDirection + " ligneDerniereCase: " + ligneDerniereCase + " colonneDireniereCase: " + colonneDerniereCase + " ligneI: " + ligneI + " colonneI: " + colonneI);
             obstacle = this.echiquier.getCase(colonneI, ligneI).getPiece();
 
             if (obstacle != null) return obstacle;
@@ -323,7 +338,7 @@ public class Partie {
                     if (pieceTestee.deplacement(caseTestee) && this.findObstacle(pieceTestee.getCase(), caseTestee) == null) {
                         // Verifier si le roi est en echec si la pièce testée est déplacée à la case testée
                         if (!this.estEnEchec(pieceTestee.getCase(), caseTestee)) {
-                            System.out.println("isFin() ? -> Un coup est possible avec " + pieceTestee + "en " + caseTestee.getNumero());
+                            //TODO retirer message debug System.out.println("isFin() ? -> Un coup est possible avec " + pieceTestee + "en " + caseTestee.getNumero());
                             return false;
                         }
                     }
@@ -346,12 +361,10 @@ public class Partie {
         }
 
         if (pieceDeplacee instanceof Pion pion) {
-            System.out.println(pieceDeplacee + " va bouger : " + pion.aBouge());
             if (!pion.aBouge()) pion.seDeplace();
-            System.out.println(pieceDeplacee + " a bougé : " + pion.aBouge());
         }
 
-        Affichage.info(this.joueurActuel, "Coup joué : " + pieceDeplacee + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
+        Affichage.info(this.joueurActuel, "Coup joué : " + pieceDeplacee.getNom() + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
     }
 
     //TODO Finir
@@ -359,8 +372,7 @@ public class Partie {
 
         if (raison.equals("forfait")) {
             Affichage.info(this.joueurActuel, this.getJoueurAdverse(this.joueurActuel).getNom() + " a déclaré forfait, la partie est remportée par " + this.joueurActuel.getNom() + " !");
-        }
-        if (raison.equals("echec")) {
+        } else if (raison.equals("echec")) {
             Affichage.info(this.joueurActuel, "Echec et mat !");
         } else {
             Affichage.info(this.joueurActuel, "Match nul !");

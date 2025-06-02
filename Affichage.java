@@ -39,7 +39,6 @@ public abstract class Affichage {
         affichage += "\n    A  B  C  D  E  F  G  H";
         System.out.println(affichage);
         if (enEchec) critique(partie.getJoueurActuel(), "Echec !!");
-        info(partie.getJoueurActuel(), "Au tour de " + partie.getJoueurActuel().getNom() +" !");
 
     }
 
@@ -108,5 +107,29 @@ public abstract class Affichage {
 
     public static String font_bleu(String message) {
         return "\033[45m" + message + RESET;
+    }
+
+    public static char getIcone(Piece piece) {
+        if (piece.getCouleur() == Couleur.Blanc) {
+            return switch (piece.getNom()) {
+                case "Pion" -> '♙';
+                case "Cavalier" -> '♘';
+                case "Roi" -> '♔';
+                case "Dame" -> '♕';
+                case "Fou" -> '♗';
+                case "Tour" -> '♖';
+                default -> '?';
+            };
+        } else {
+            return switch (piece.getNom()) {
+                case "Pion" -> '♟';
+                case "Cavalier" -> '♞';
+                case "Roi" -> '♚';
+                case "Dame" -> '♛';
+                case "Fou" -> '♝';
+                case "Tour" -> '♜';
+                default -> '?';
+            };
+        }
     }
 }

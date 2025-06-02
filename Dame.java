@@ -1,8 +1,8 @@
 
-public class Reine extends Piece {
+public class Dame extends Piece {
 
-    public Reine(Couleur couleur) {
-        super(couleur, "Reine", 'E');
+    public Dame(Couleur couleur) {
+        super(couleur, "Dame", 'D');
     }
 
     public boolean deplacement(Case destination) {

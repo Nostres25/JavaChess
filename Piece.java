@@ -38,6 +38,10 @@ public abstract class Piece {
         
     }
 
+    public void setIcone(char nouvelleIcone) {
+        this.icone = nouvelleIcone;
+    }
+
     public abstract boolean deplacement ( Case destination);
 
      @Override
