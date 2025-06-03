@@ -1,7 +1,7 @@
 
 public class Echiquier {
 
-    private Case[][] cases; 
+    private final Case[][] cases; 
 
     public Echiquier() {
         this.cases = new Case[8][8];

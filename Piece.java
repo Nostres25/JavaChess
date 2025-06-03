@@ -1,9 +1,9 @@
 public abstract class Piece {
 
-    public Couleur couleur;
-    public String nom;
-    public char icone;
-    public Case emplacement;
+    private final Couleur couleur;
+    private final String nom;
+    private char icone;
+    private Case emplacement;
 
     public Piece(Couleur couleur,String nom,char icone ) { 
         this.couleur = couleur;

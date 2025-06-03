@@ -1,8 +1,8 @@
 
 public class Case {
-    public final int colonne;
-    public final int ligne;
-    public Piece contenu;
+    private final int colonne;
+    private final int ligne;
+    private Piece contenu;
 
 
     public Case(int colonne, int ligne){
