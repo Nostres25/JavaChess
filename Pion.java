@@ -38,7 +38,7 @@ public class Pion extends Piece {
             ((destination.getPiece() == null && colonneDiff == 0) ||
                 (ligneDiffAbs == Math.abs(colonneDiff) && 
                     destination.getPiece() != null &&
-                    destination.getPiece().getCouleur() == Partie.getCouleurOpposee(this.couleur) &&
+                    destination.getPiece().getCouleur() == Partie.getCouleurOpposee(this.getCouleur()) &&
                         ligneDiffAbs == 1)); 
     }
 }

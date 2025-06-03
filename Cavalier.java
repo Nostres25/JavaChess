@@ -1,7 +1,7 @@
 public class Cavalier extends Piece {
 
     public Cavalier (Couleur couleur){
-         super(couleur,"Cavalier",'C');
+         super(couleur, "Cavalier", 'C');
  
     }
 
