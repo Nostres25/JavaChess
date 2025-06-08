@@ -43,7 +43,7 @@ public abstract class Affichage {
             switch (ligneI) {
                 case 6 -> {
                     if (pieceDeplacee != null && ancienneCase != null)
-                        affichage += "   " + bleu("Coup joué par "+partie.getJoueur(pieceDeplacee.getCouleur()).getNom()+" : " + ancienneCase.getNumero() + " --> " + pieceDeplacee.getNom());
+                        affichage += "   " + bleu("Coup joué par "+partie.getJoueur(pieceDeplacee.getCouleur()).getNom()+" : " + ancienneCase.getNumero() + " --> " + pieceDeplacee);
                 }
                 case 4 -> {
                     if (!partie.getHorlogeActivee()) break;

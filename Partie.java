@@ -8,6 +8,7 @@ public class Partie {
     private boolean horlogesActives;
 
     public Partie(String nomJoueur1, String nomJoueur2, boolean avecHorloge) {
+        this.horlogesActives = avecHorloge;
         this.echiquier = new Echiquier();
 
         // Initialisation des joueurs
@@ -161,11 +162,14 @@ public class Partie {
                     caseArrivee = this.getCase(scanner.nextLine().replace(" ", "").toUpperCase());
                 }
 
-                if (joueurBlanc.getHorloge() <= 0 || joueurNoir.getHorloge() <= 0) {
+                // TODO Fin du scanner, la case de départ et la case d'arrivée ont été sélectionnés avec succès.
+                float tempsPasse = System.currentTimeMillis() - debutTour;
+                if (this.joueurActuel.getHorloge() - tempsPasse <= 0) {
+                    this.joueurActuel.retirerTemps(tempsPasse);
                     fin("temps écoulé");
                     return;
                 }
-                // TODO Fin du scanner, la case de départ et la case d'arrivée ont été sélectionnés avec succès.
+
 
                 // Sécurité concernant la possibilité de ne pas se déplacer
                 if (caseArrivee.equals(caseDepart)) {
@@ -180,8 +184,7 @@ public class Partie {
                 }
 
                 // Validation du coup et changement de tour
-                this.validerCoup(caseDepart, caseArrivee, debutTour);
-
+                this.validerCoup(caseDepart, caseArrivee, tempsPasse);
                 this.changerDeTour(piece, caseDepart);
 
              } catch (NoSuchElementException e) {
@@ -375,10 +378,10 @@ public class Partie {
     }
 
 
-    public void validerCoup(Case caseDepart, Case caseArrivee, long debutTour) {
+    public void validerCoup(Case caseDepart, Case caseArrivee, float tempsPasse) {
         // Retirer le temps de reflexion à l'horloge du joueur
         if (this.horlogesActives)
-            this.joueurActuel.retirerTemps(System.currentTimeMillis() - debutTour);
+            this.joueurActuel.retirerTemps(tempsPasse);
 
         // Deplacer la pièce de la case de départ à la case d'arrivée
         // TODO prendre en paramètre Piece ?
@@ -413,8 +416,11 @@ public class Partie {
                 Affichage.critique(this.joueurActuel, "Echec et mat ! Vous ne disposez d'aucun coup valider pour sauver votre " + this.joueurActuel.getRoi());
             }
             case "temps écoulé" ->  {
-                gagnant = this.joueurActuel;
-                Affichage.critique(this.getJoueurAdverse(this.joueurActuel), "Temps écoulé !");
+                gagnant = this.getJoueurAdverse(this.joueurActuel);
+                double secondes = this.joueurActuel.getHorloge() / 1000;
+                double minutes = Math.floor(secondes / 60);
+                secondes = secondes - minutes * 60;
+                Affichage.critique(this.joueurActuel, "Temps écoulé : "+(int)minutes+"min "+secondes+"s");
             }
             default -> {
                 System.out.println(Affichage.jaune("Partie nulle ! ") + this.joueurActuel.getNom() + ", qui jouait les " + this.joueurActuel.getCouleur() + "s, n'est pas en echec mais ne dispose d'aucun coup valide.");
