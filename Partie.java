@@ -191,9 +191,7 @@ public class Partie {
                 Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case ! (format: <lettreColonne><numéroLigne>, ex: A2)");
                 demanderAction(enEchec, debutTour);
             } catch (IndexOutOfBoundsException e) {
-                //TODO cette erreur est survenue anormalement à un moment - corrigee ???
                 Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case valide ! Les lettres des colonnes sont de A à H et les numéros de lignes de 1 à 8. (format: <lettreColonne><numéroLigne>, ex: A2)");
-                //e.printStackTrace();
                 demanderAction(enEchec, debutTour);
             } catch (NumberFormatException e) {
                 Affichage.erreur(this.joueurActuel, "Veuillez préciser une lettre pour la colonne suivie d'un chiffre pour la ligne (format: <lettreColonne><numéroLigne>, ex: A2)");
@@ -280,26 +278,15 @@ public class Partie {
         int colonneI = caseArrivee.getColonne();
 
         // Calcul de la direction du déplacement
-        int ligneDiff = caseArrivee.getLigne() - caseDepart.getLigne();
-        int colonneDiff = caseArrivee.getColonne() - caseDepart.getColonne();
+        int ligneDiff =  caseDepart.getLigne() - caseArrivee.getLigne();
+        int colonneDiff =  caseDepart.getColonne() - caseArrivee.getColonne();
 
-        // TODO trouver une meilleure solution
-        int ligneDirection ;
-        if (ligneDiff > 0) {
-            ligneDirection = -1;
-        } else if (ligneDiff < 0) {
-            ligneDirection = 1;
-        } else {
-            ligneDirection = 0;
-        }
-        int colonneDirection ;
-        if (colonneDiff > 0) {
-            colonneDirection = -1;
-        } else if (colonneDiff < 0) {
-            colonneDirection = 1;
-        } else {
-            colonneDirection = 0;
-        }
+        
+        int ligneDirection = 0;
+        if (ligneDiff != 0) ligneDirection = ligneDiff / Math.abs(ligneDiff);
+
+        int colonneDirection = 0;
+        if (colonneDiff != 0) colonneDirection = colonneDiff / Math.abs(colonneDiff);
 
         // Tant que la dernière case (avant case de départ) n'est pas atteinte et tant qu'il n'y a pas d'obstacle
         int ligneDerniereCase = caseDepart.getLigne() - ligneDirection;
@@ -365,7 +352,6 @@ public class Partie {
                     if (pieceTestee.deplacement(caseTestee) && this.findObstacle(pieceTestee.getCase(), caseTestee) == null) {
                         // Verifier si le roi est en echec si la pièce testée est déplacée à la case testée
                         if (!this.estEnEchec(pieceTestee.getCase(), caseTestee)) {
-                            //TODO retirer message debug System.out.println("isFin() ? -> Un coup est possible avec " + pieceTestee + "en " + caseTestee.getNumero());
                             return false;
                         }
                     }
@@ -399,7 +385,6 @@ public class Partie {
         }
     }
 
-    //TODO Finir
     public void fin(String raison) {
 
         Joueur gagnant ;
