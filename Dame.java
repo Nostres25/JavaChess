@@ -5,6 +5,7 @@ public class Dame extends Piece {
         super(couleur, "Dame", 'D');
     }
 
+    @Override
     public boolean deplacement(Case destination) {
         int ligneDiff = destination.getLigne() - this.getCase().getLigne();
         int colonneDiff = destination.getColonne() - this.getCase().getColonne();

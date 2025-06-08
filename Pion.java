@@ -20,7 +20,6 @@ public class Pion extends Piece {
 
 
     @Override
-
     public boolean deplacement (Case destination){
 
         int colonne = this.getCase().getColonne();                                                                                                  

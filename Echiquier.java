@@ -57,7 +57,6 @@ public class Echiquier {
 
     }
 
-
     public Case[][] getCases(){
         return this.cases;
     }

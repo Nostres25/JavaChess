@@ -5,6 +5,7 @@ public class Roi extends Piece {
         super(couleur, "Roi", 'R');
     }
 
+    @Override
     public boolean deplacement(Case destination) {
         return 
             Math.abs(destination.getLigne() - this.getCase().getLigne()) <= 1 &&

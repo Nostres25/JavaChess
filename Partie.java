@@ -246,7 +246,7 @@ public class Partie {
         }
 
         //TODO pourquoi ne pas utiliser instanceof ? 
-        if (piece.getNom().equals("Cavalier")) return null;
+        if (piece instanceof Cavalier) return null;
 
         // Partir de la case d'arrivée pour aller jusqu'à la case de départ
         int ligneI = caseArrivee.getLigne();
