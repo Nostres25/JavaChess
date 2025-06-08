@@ -5,8 +5,9 @@ public class Partie {
     private final Joueur joueurNoir;
     private final Echiquier echiquier; 
     private Joueur joueurActuel;
+    private boolean horlogesActives;
 
-    public Partie(String nomJoueur1, String nomJoueur2) {
+    public Partie(String nomJoueur1, String nomJoueur2, boolean avecHorloge) {
         this.echiquier = new Echiquier();
 
         // Initialisation des joueurs
@@ -14,7 +15,7 @@ public class Partie {
         this.joueurNoir = new Joueur(this, Couleur.Noir, nomJoueur2);
     }
     public Partie(Partie partie) {
-        this(partie.getJoueur(Couleur.Blanc).getNom(), partie.getJoueur(Couleur.Noir).getNom());
+        this(partie.getJoueur(Couleur.Blanc).getNom(), partie.getJoueur(Couleur.Noir).getNom(), partie.getHorlogeActivee());
     }
 
     public static Couleur getCouleurOpposee(Couleur couleur) {
@@ -25,6 +26,8 @@ public class Partie {
     public static void nouvellePartie() {
         try {
             System.out.println("Création d'une nouvelle partie d'echec...");
+
+            // Demander le pseudo des joueurs
             System.out.println(Affichage.bleu("Entrez le nom du joueur qui jouera les ")+"blancs:");
             Scanner scanner = new Scanner(System.in);
             
@@ -33,11 +36,24 @@ public class Partie {
             System.out.println(Affichage.bleu("Entrez le nom du joueur qui jouera les ")+Affichage.noirf("noirs:"));
             String nomJoueur2 = scanner.nextLine();
 
-            Partie partie = new Partie(nomJoueur1, nomJoueur2);
+            String reponse ;
 
+            // Demander s'il est souhaité de jouer avec l'horloge
+            boolean avecHorloge = false;
+            System.out.println(Affichage.jaune("Souhaitez-vous jouer avec un temps limité défini à 10 minutes de temps de réflexion ? (envoyer \"oui\" pour un temps limité, \"non\" sinon)"));
+            reponse = scanner.nextLine();
+            if (reponse.equalsIgnoreCase("oui")) {
+                avecHorloge = true;
+            }
+
+            // Création de la partie
+            Partie partie = new Partie(nomJoueur1, nomJoueur2, avecHorloge);
+
+            // Demander s'il est souhaité de jouer avec l'affichage des pièces d'échecs avec les caractères unicode
             System.out.println(Affichage.jaune("Souhaitez-vous essayer le mode d'affichage experimental ? Le jeu sera bien plus facile à lire mais il se pourrait qu'il ne fonctionne pas dans votre terminal, notamment si vous êtes sur windows ! (envoyer \"oui\" pour essayer, \"non\" sinon)"));
-            String reponse_beta = scanner.nextLine();
-            if (reponse_beta.equalsIgnoreCase("oui")) {
+            reponse = scanner.nextLine();
+            if (reponse.equalsIgnoreCase("oui")) {
+                // Si oui, modification de l'icone des pièces
                 for (Piece piecesBlanches : partie.getJoueur(Couleur.Blanc).getPieces()) {
                     piecesBlanches.setIcone(Affichage.getIcone(piecesBlanches));
                 }
@@ -47,9 +63,11 @@ public class Partie {
                 }
 
             } else {
+                // Affichage de la légende pour chaque type de pièce
                 System.out.println("- R -> Roi\n- D -> Dame\n- C -> Cavalier\n- F -> Fou\n- T -> Tour\n- P -> Pion ");
             }
             
+            // Lancement du premier tour
             partie.changerDeTour(null, null);;
             
         } catch (Exception e) {
@@ -88,7 +106,7 @@ public class Partie {
                 return true;
     }
 
-    public void demanderAction(boolean enEchec) {
+    public void demanderAction(boolean enEchec, long debutTour) {
 
 
         // Possibilité de jouer d'un coup ou en deux questions
@@ -113,7 +131,7 @@ public class Partie {
                         return;
                     } else {
                         Affichage.erreur(this.joueurActuel, this.getJoueurAdverse(this.joueurActuel).getNom() + " a refusé la victoire par forfait.");
-                        demanderAction(enEchec);
+                        demanderAction(enEchec, debutTour);
                         return;
                     }
                 }
@@ -125,7 +143,7 @@ public class Partie {
                 // Le joueur doit avoir une pièce à la case sélectionnée
                 if (piece == null || this.joueurActuel.getCouleur() != piece.getCouleur()) {
                     Affichage.erreur(this.joueurActuel, "Vous n'avez pas de pièce à la case " + caseDepart.getNumero());
-                    demanderAction(enEchec);
+                    demanderAction(enEchec, debutTour);
                     return;
                 }
 
@@ -143,41 +161,44 @@ public class Partie {
                     caseArrivee = this.getCase(scanner.nextLine().replace(" ", "").toUpperCase());
                 }
 
-
+                if (joueurBlanc.getHorloge() <= 0 || joueurNoir.getHorloge() <= 0) {
+                    fin("temps écoulé");
+                    return;
+                }
                 // TODO Fin du scanner, la case de départ et la case d'arrivée ont été sélectionnés avec succès.
 
                 // Sécurité concernant la possibilité de ne pas se déplacer
                 if (caseArrivee.equals(caseDepart)) {
                     Affichage.erreur(this.joueurActuel, "Vous ne pouvez pas rester sur la même case !");
-                    demanderAction(enEchec);
+                    demanderAction(enEchec, debutTour);
                     return;
                 }
 
                 if (!this.estDeplacementValide(piece, caseArrivee)) {
-                    demanderAction(enEchec);
+                    demanderAction(enEchec, debutTour);
                     return;
                 }
 
                 // Validation du coup et changement de tour
-                this.validerCoup(caseDepart, caseArrivee);
+                this.validerCoup(caseDepart, caseArrivee, debutTour);
 
                 this.changerDeTour(piece, caseDepart);
 
              } catch (NoSuchElementException e) {
                 Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case ! (format: <lettreColonne><numéroLigne>, ex: A2)");
-                demanderAction(enEchec);
+                demanderAction(enEchec, debutTour);
             } catch (IndexOutOfBoundsException e) {
                 //TODO cette erreur est survenue anormalement à un moment - corrigee ???
                 Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case valide ! Les lettres des colonnes sont de A à H et les numéros de lignes de 1 à 8. (format: <lettreColonne><numéroLigne>, ex: A2)");
                 //e.printStackTrace();
-                demanderAction(enEchec);
+                demanderAction(enEchec, debutTour);
             } catch (NumberFormatException e) {
                 Affichage.erreur(this.joueurActuel, "Veuillez préciser une lettre pour la colonne suivie d'un chiffre pour la ligne (format: <lettreColonne><numéroLigne>, ex: A2)");
-                demanderAction(enEchec);
+                demanderAction(enEchec, debutTour);
             } catch (Exception e) {
                 System.err.println(Affichage.font_rouge("Une erreur inattendue est survenue !"));
                 e.printStackTrace(System.out);
-                demanderAction(enEchec);
+                demanderAction(enEchec, debutTour);
             }
 
     }
@@ -203,7 +224,7 @@ public class Partie {
         }
 
         Affichage.info(this.getJoueurActuel(), "Au tour de " + this.getJoueurActuel().getNom() +" !");
-        demanderAction(enEchec);
+        demanderAction(enEchec, System.currentTimeMillis());
     }
 
     public Joueur getJoueur(Couleur couleur) {
@@ -233,6 +254,10 @@ public class Partie {
         int ligne = Integer.parseInt(numeroCase.charAt(1)+"") - 1;
 
         return this.echiquier.getCase(colonne, ligne);
+    }
+
+    public boolean getHorlogeActivee() {
+        return this.horlogesActives;
     }
 
 
@@ -345,38 +370,59 @@ public class Partie {
                 }
             }
         }
+
         return true;
     }
 
 
-    public void validerCoup(Case caseDepart, Case caseArrivee) {
+    public void validerCoup(Case caseDepart, Case caseArrivee, long debutTour) {
+        // Retirer le temps de reflexion à l'horloge du joueur
+        if (this.horlogesActives)
+            this.joueurActuel.retirerTemps(System.currentTimeMillis() - debutTour);
+
+        // Deplacer la pièce de la case de départ à la case d'arrivée
+        // TODO prendre en paramètre Piece ?
         Piece pieceDeplacee = caseDepart.getPiece();
         Piece pieceMangee = caseArrivee.getPiece();
 
         pieceDeplacee.deplacer(caseArrivee);
 
+        // Retirer la piece mangée de la liste des pièces du joueur adverse
         if (pieceMangee != null) {
             if (!this.getJoueurAdverse(this.joueurActuel).getPieces().remove(pieceMangee)) System.err.println("La pièce mangée n'a pas été retirée de la liste des pièces du joueur adverse");
             // TODO remplir la liste des pieces mangées et retirer le condition
         }
 
+        // Si un pion a été déplacé, déclarer son déplacement
         if (pieceDeplacee instanceof Pion pion) {
             if (!pion.aBouge()) pion.seDeplace();
         }
-
-        Affichage.info(this.joueurActuel, "Coup joué : " + pieceDeplacee.getNom() + " " + caseDepart.getNumero() + " --> " + caseArrivee.getNumero());
     }
 
     //TODO Finir
     public void fin(String raison) {
 
-        if (raison.equals("forfait")) {
-            Affichage.info(this.joueurActuel, this.getJoueurAdverse(this.joueurActuel).getNom() + " a déclaré forfait, la partie est remportée par " + this.joueurActuel.getNom() + " !");
-        } else if (raison.equals("echec")) {
-            Affichage.info(this.joueurActuel, "Echec et mat !");
-        } else {
-            Affichage.info(this.joueurActuel, "Match nul !");
+        Joueur gagnant ;
+        switch (raison) {
+            case "forfait" ->  {
+                gagnant = this.joueurActuel;
+                Affichage.info(gagnant, this.getJoueurAdverse(gagnant).getNom() + " a déclaré forfait.");
+            }
+            case "echec" ->  {
+                gagnant = this.getJoueurAdverse(this.joueurActuel);
+                Affichage.critique(this.joueurActuel, "Echec et mat ! Vous ne disposez d'aucun coup valider pour sauver votre " + this.joueurActuel.getRoi());
+            }
+            case "temps écoulé" ->  {
+                gagnant = this.joueurActuel;
+                Affichage.critique(this.getJoueurAdverse(this.joueurActuel), "Temps écoulé !");
+            }
+            default -> {
+                System.out.println(Affichage.jaune("Partie nulle ! ") + this.joueurActuel.getNom() + ", qui jouait les " + this.joueurActuel.getCouleur() + "s, n'est pas en echec mais ne dispose d'aucun coup valide.");
+                return;
+            }
         }
+
+        System.out.println("La partie est remportée par " + gagnant.getNom() + " !");
 
     }  
 }

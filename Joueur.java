@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 
 public class Joueur {
+    private static final float HORLOGES_DEFAUT = 10 * 60 * 1000;
+
     private final Partie partie;
     private final Couleur couleur;
     private final String nom;
@@ -8,7 +10,12 @@ public class Joueur {
     private Roi roi;
     private float horloge;
 
+    public static float getHorlogesDefaut() {
+        return HORLOGES_DEFAUT;
+    }
+
     public Joueur(Partie partie, Couleur couleur, String nom) {
+        this.horloge = HORLOGES_DEFAUT;
         this.partie = partie;
         this.couleur = couleur;
         this.nom = nom;
@@ -58,8 +65,12 @@ public class Joueur {
         return this.roi;
     }
 
-    public void setHorloge(float nouveauTemps) {
+    public void setHorloge(int nouveauTemps) {
         this.horloge = nouveauTemps;
+    }
+
+    public void retirerTemps(float tempsPerdu) {
+        this.horloge = this.horloge - tempsPerdu;
     }
     
 }

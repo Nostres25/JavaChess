@@ -5,13 +5,14 @@ public abstract class Affichage {
     
     public static void actualiserAffichage(Partie partie, boolean enEchec, Piece pieceDeplacee, Case ancienneCase) { 
 
-        String affichage = "    A  B  C  D  E  F  G  H";
         Case[][] cases = partie.getEchiquier().getCases();
+
+        String affichage = "    A  B  C  D  E  F  G  H\n";
         for (int ligneI = cases.length - 1; ligneI >= 0; ligneI--) {
 
             // Écriture d'une nouvelle ligne
             int ligneAffichee = ligneI+1;
-            affichage += "\n" + (ligneAffichee) + " |";
+            affichage += (ligneAffichee) + " |";
 
             for (int colI = 0; colI < cases[ligneI].length; colI++) {
 
@@ -39,9 +40,34 @@ public abstract class Affichage {
             }
 
             affichage += "| "+ligneAffichee;
+            switch (ligneI) {
+                case 6 -> {
+                    if (pieceDeplacee != null && ancienneCase != null)
+                        affichage += "   " + bleu("Coup joué par "+partie.getJoueur(pieceDeplacee.getCouleur()).getNom()+" : " + ancienneCase.getNumero() + " --> " + pieceDeplacee.getNom());
+                }
+                case 4 -> {
+                    if (!partie.getHorlogeActivee()) break;
+                    Joueur joueurNoir = partie.getJoueur(Couleur.Noir);
+                    double secondes = joueurNoir.getHorloge() / 1000;
+                    double minutes = Math.floor(secondes / 60);
+                    secondes = secondes - minutes * 60;
+                    affichage += "   - " + joueurNoir.getNom() + " (" + joueurNoir.getCouleur() + ") --> " + bleu("Temps restant: "+(int)minutes+"min "+secondes+"s");
+                }
+                case 3 -> {
+                    if (!partie.getHorlogeActivee()) break;
+                    Joueur joueurBlanc = partie.getJoueur(Couleur.Blanc);
+                    double secondes = joueurBlanc.getHorloge() / 1000;
+                    double minutes = Math.floor(secondes / 60);
+                    secondes = secondes - minutes * 60;
+                    affichage += "   - " + joueurBlanc.getNom() + " (" + joueurBlanc.getCouleur() + ") --> " + bleu("Temps restant: "+(int)minutes+"min "+secondes+"s");
+                }
+                default -> {}
+            }
+
+            affichage += "\n";
         }
 
-        affichage += "\n    A  B  C  D  E  F  G  H";
+        affichage += "    A  B  C  D  E  F  G  H";
         System.out.println(affichage);
         if (enEchec) critique(partie.getJoueurActuel(), "Echec !!");
 
