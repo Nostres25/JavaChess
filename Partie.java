@@ -69,11 +69,12 @@ public class Partie {
             }
             
             // Lancement du premier tour
-            partie.changerDeTour(null, null);;
+            partie.changerDeTour(null, null);
+
+            scanner.close();
             
         } catch (Exception e) {
             System.err.println("Une erreur est survenue au lancement de la partie !");
-            e.printStackTrace();
         }
 
     }
@@ -281,7 +282,7 @@ public class Partie {
         int ligneDiff =  caseDepart.getLigne() - caseArrivee.getLigne();
         int colonneDiff =  caseDepart.getColonne() - caseArrivee.getColonne();
 
-        
+
         int ligneDirection = 0;
         if (ligneDiff != 0) ligneDirection = ligneDiff / Math.abs(ligneDiff);
 
@@ -299,10 +300,6 @@ public class Partie {
             colonneI += colonneDirection;
 
             // Si un obstacle est trouvé, le retourner (n'importe quelle pièce sur le chemin)
-
-            //TODO vérifier ici parfois colonneI ou ligneI = -1 (ex: echec et matt). Voir peut-être pour quelles cases
-
-            //System.out.println("findObstacle -> CaseArrivee: " + caseArrivee.getNumero() +" CaseDepart: " + caseDepart.getNumero() + " ligneDiff: " + ligneDiff + " colonneDiff: " + colonneDiff + " ligneDirection: " + ligneDirection + " colonneDirection: " + colonneDirection + " ligneDerniereCase: " + ligneDerniereCase + " colonneDireniereCase: " + colonneDerniereCase + " ligneI: " + ligneI + " colonneI: " + colonneI);
             obstacle = this.echiquier.getCase(colonneI, ligneI).getPiece();
 
             if (obstacle != null) return obstacle;
@@ -376,7 +373,6 @@ public class Partie {
         // Retirer la piece mangée de la liste des pièces du joueur adverse
         if (pieceMangee != null) {
             if (!this.getJoueurAdverse(this.joueurActuel).getPieces().remove(pieceMangee)) System.err.println("La pièce mangée n'a pas été retirée de la liste des pièces du joueur adverse");
-            // TODO remplir la liste des pieces mangées et retirer le condition
         }
 
         // Si un pion a été déplacé, déclarer son déplacement
@@ -411,6 +407,15 @@ public class Partie {
         }
 
         System.out.println("La partie est remportée par " + gagnant.getNom() + " !");
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(Affichage.jaune("Souhaitez-vous rejouer ? (\"oui\" ou \"non\")"));
+
+        String reponse = scanner.nextLine();
+        if (reponse.equalsIgnoreCase("oui")) {
+            Partie.nouvellePartie();
+        }
+
 
     }  
 }

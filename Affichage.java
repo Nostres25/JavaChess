@@ -19,6 +19,7 @@ public abstract class Affichage {
                 //Écriture d'une nouvelle case
                 Piece piece = cases[ligneI][colI].getPiece();
                 String contenu ;
+
                 if (piece == null) contenu = " ";
                 else if (piece.getCouleur() == Couleur.Noir) {
                     contenu = "\033[1;30m"+piece.getIcone();
@@ -26,10 +27,12 @@ public abstract class Affichage {
                     contenu = "\033[1;37m"+piece.getIcone()+"";
                 }
 
+                // Souligner la pièce précédemment déplacée
                 if (pieceDeplacee != null && pieceDeplacee.equals(piece)) {
                     contenu = "\033[4;34m" + contenu;
                 }
 
+                // Couleurs de fond : fond bleu pour la position de la pièce précédemment déplacée ou damier
                 if (ancienneCase != null && ligneI == ancienneCase.getLigne() && colI == ancienneCase.getColonne()) {
                     affichage += "\033[44m " + contenu + " " + RESET;
                 } else if ((ligneI%2 == 0 && colI%2 == 0) || (ligneI%2 != 0 && colI%2 != 0)) {
@@ -40,12 +43,16 @@ public abstract class Affichage {
             }
 
             affichage += "| "+ligneAffichee;
+
+            // Affichage d'informations supplémentaires
             switch (ligneI) {
                 case 6 -> {
+                    // Coup joué précédemment
                     if (pieceDeplacee != null && ancienneCase != null)
                         affichage += "   " + bleu("Coup joué par "+partie.getJoueur(pieceDeplacee.getCouleur()).getNom()+" : " + ancienneCase.getNumero() + " --> " + pieceDeplacee);
                 }
                 case 4 -> {
+                    // Horloge du joueur noir
                     if (!partie.getHorlogeActivee()) break;
                     Joueur joueurNoir = partie.getJoueur(Couleur.Noir);
                     double secondes = joueurNoir.getHorloge() / 1000;
@@ -54,6 +61,7 @@ public abstract class Affichage {
                     affichage += "   - " + joueurNoir.getNom() + " (" + joueurNoir.getCouleur() + ") --> " + bleu("Temps restant: "+(int)minutes+"min "+secondes+"s");
                 }
                 case 3 -> {
+                    // Horloge du joueur blanc
                     if (!partie.getHorlogeActivee()) break;
                     Joueur joueurBlanc = partie.getJoueur(Couleur.Blanc);
                     double secondes = joueurBlanc.getHorloge() / 1000;
