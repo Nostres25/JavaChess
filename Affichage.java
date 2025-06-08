@@ -3,7 +3,7 @@ public abstract class Affichage {
         
     
     
-    public static void actualiserAffichage(Partie partie, boolean enEchec) { 
+    public static void actualiserAffichage(Partie partie, boolean enEchec, Piece pieceDeplacee, Case ancienneCase) { 
 
         String affichage = "    A  B  C  D  E  F  G  H";
         Case[][] cases = partie.getEchiquier().getCases();
@@ -13,10 +13,10 @@ public abstract class Affichage {
             int ligneAffichee = ligneI+1;
             affichage += "\n" + (ligneAffichee) + " |";
 
-            for (int caseI = 0; caseI < cases[ligneI].length; caseI++) {
+            for (int colI = 0; colI < cases[ligneI].length; colI++) {
 
                 //Écriture d'une nouvelle case
-                Piece piece = cases[ligneI][caseI].getPiece();
+                Piece piece = cases[ligneI][colI].getPiece();
                 String contenu ;
                 if (piece == null) contenu = " ";
                 else if (piece.getCouleur() == Couleur.Noir) {
@@ -24,9 +24,14 @@ public abstract class Affichage {
                 } else {
                     contenu = "\033[1;37m"+piece.getIcone()+"";
                 }
-                
 
-                if ((ligneI%2 == 0 && caseI%2 == 0) || (ligneI%2 != 0 && caseI%2 != 0)) {
+                if (pieceDeplacee != null && pieceDeplacee.equals(piece)) {
+                    contenu = "\033[4;34m" + contenu;
+                }
+
+                if (ancienneCase != null && ligneI == ancienneCase.getLigne() && colI == ancienneCase.getColonne()) {
+                    affichage += "\033[44m " + contenu + " " + RESET;
+                } else if ((ligneI%2 == 0 && colI%2 == 0) || (ligneI%2 != 0 && colI%2 != 0)) {
                     affichage += "\033[45m "+contenu+" "+RESET;
                 } else {
                     affichage += " " + contenu + " "+RESET;
@@ -43,7 +48,7 @@ public abstract class Affichage {
     }
 
     public static void repondre(Joueur joueur, String message) {
-        System.out.println("-> " + joueur.getNom() + " (" + joueur.getCouleur() + ") : " + message);
+        System.out.println("-> " + bleu(joueur.getNom()) + " (" + joueur.getCouleur() + ") : " + message);
     }
 
     public static void info(Joueur joueur, String message) {

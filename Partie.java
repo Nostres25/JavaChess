@@ -35,7 +35,7 @@ public class Partie {
 
             Partie partie = new Partie(nomJoueur1, nomJoueur2);
 
-            System.out.println(Affichage.jaune("Souhaitez-vous essayer le mode d'affichage experimentale ? Le jeu sera bien plus facile à lire mais il se pourrait qu'il ne fonctionne pas dans votre terminal, notamment si vous êtes sur windows ! (envoyer \"oui\" pour essayer, \"non\" sinon)"));
+            System.out.println(Affichage.jaune("Souhaitez-vous essayer le mode d'affichage experimental ? Le jeu sera bien plus facile à lire mais il se pourrait qu'il ne fonctionne pas dans votre terminal, notamment si vous êtes sur windows ! (envoyer \"oui\" pour essayer, \"non\" sinon)"));
             String reponse_beta = scanner.nextLine();
             if (reponse_beta.equalsIgnoreCase("oui")) {
                 for (Piece piecesBlanches : partie.getJoueur(Couleur.Blanc).getPieces()) {
@@ -50,7 +50,7 @@ public class Partie {
                 System.out.println("- R -> Roi\n- D -> Dame\n- C -> Cavalier\n- F -> Fou\n- T -> Tour\n- P -> Pion ");
             }
             
-            partie.changerDeTour();
+            partie.changerDeTour(null, null);;
             
         } catch (Exception e) {
             System.err.println("Une erreur est survenue au lancement de la partie !");
@@ -161,18 +161,18 @@ public class Partie {
                 // Validation du coup et changement de tour
                 this.validerCoup(caseDepart, caseArrivee);
 
-                this.changerDeTour();
+                this.changerDeTour(piece, caseDepart);
 
              } catch (NoSuchElementException e) {
-                Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case !");
+                Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case ! (format: <lettreColonne><numéroLigne>, ex: A2)");
                 demanderAction(enEchec);
             } catch (IndexOutOfBoundsException e) {
                 //TODO cette erreur est survenue anormalement à un moment - corrigee ???
-                Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case valide !");
+                Affichage.erreur(this.joueurActuel, "Veuillez entrer un numéro de case valide ! Les lettres des colonnes sont de A à H et les numéros de lignes de 1 à 8. (format: <lettreColonne><numéroLigne>, ex: A2)");
                 //e.printStackTrace();
                 demanderAction(enEchec);
             } catch (NumberFormatException e) {
-                Affichage.erreur(this.joueurActuel, "Veuillez préciser un chiffre pour localiser la ligne. (et une lettre pour la colonne)");
+                Affichage.erreur(this.joueurActuel, "Veuillez préciser une lettre pour la colonne suivie d'un chiffre pour la ligne (format: <lettreColonne><numéroLigne>, ex: A2)");
                 demanderAction(enEchec);
             } catch (Exception e) {
                 System.err.println(Affichage.font_rouge("Une erreur inattendue est survenue !"));
@@ -182,7 +182,7 @@ public class Partie {
 
     }
 
-    public void changerDeTour() {
+    public void changerDeTour(Piece pieceDeplacee, Case ancienneCase) {
         boolean enEchec = false;
 
         if (this.joueurActuel == null)  this.joueurActuel = joueurBlanc;
@@ -191,7 +191,7 @@ public class Partie {
             enEchec = this.estEnEchec(); 
         }
                 
-        Affichage.actualiserAffichage(this, enEchec);
+        Affichage.actualiserAffichage(this, enEchec, pieceDeplacee, ancienneCase);
 
         if (isFin()) {
 
