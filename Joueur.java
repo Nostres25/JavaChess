@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Joueur {
-    private static final float HORLOGES_DEFAUT = 1 * 60 * 1000;
+    private static final float HORLOGES_DEFAUT = 10 * 60 * 1000;
 
     private final Partie partie;
     private final Couleur couleur;
