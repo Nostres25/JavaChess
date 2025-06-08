@@ -184,7 +184,7 @@ public class Partie {
                 }
 
                 // Validation du coup et changement de tour
-                this.validerCoup(caseDepart, caseArrivee, tempsPasse);
+                this.validerCoup(piece, caseArrivee, tempsPasse);
                 this.changerDeTour(piece, caseDepart);
 
              } catch (NoSuchElementException e) {
@@ -272,8 +272,7 @@ public class Partie {
         if (obstacle != null && obstacle.getCouleur() == piece.getCouleur()) {
             return obstacle;
         }
-
-        //TODO pourquoi ne pas utiliser instanceof ? 
+ 
         if (piece instanceof Cavalier) return null;
 
         // Partir de la case d'arrivée pour aller jusqu'à la case de départ
@@ -378,14 +377,12 @@ public class Partie {
     }
 
 
-    public void validerCoup(Case caseDepart, Case caseArrivee, float tempsPasse) {
+    public void validerCoup(Piece pieceDeplacee, Case caseArrivee, float tempsPasse) {
         // Retirer le temps de reflexion à l'horloge du joueur
         if (this.horlogesActives)
             this.joueurActuel.retirerTemps(tempsPasse);
 
         // Deplacer la pièce de la case de départ à la case d'arrivée
-        // TODO prendre en paramètre Piece ?
-        Piece pieceDeplacee = caseDepart.getPiece();
         Piece pieceMangee = caseArrivee.getPiece();
 
         pieceDeplacee.deplacer(caseArrivee);
