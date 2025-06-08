@@ -8,16 +8,15 @@ public class Pion extends Piece {
     }
 
 
-        public boolean aBouge(){
-            return this.premierDeplacement; 
+    public boolean aBouge(){
+        return this.premierDeplacement; 
 
 
-        }
+    }
 
-        public void seDeplace(){
-            this.premierDeplacement = true; 
-        }
-
+    public void seDeplace(){
+        this.premierDeplacement = true; 
+    }
 
     @Override
     public boolean deplacement (Case destination){

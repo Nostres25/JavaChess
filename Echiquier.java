@@ -12,10 +12,8 @@ public class Echiquier {
 
                 this.cases[ligneI][caseI] = new Case(caseI, ligneI); 
 
-
            }
 
-             
         }
 
         // Pièces de couleur blanche 

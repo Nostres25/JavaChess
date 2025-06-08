@@ -85,9 +85,6 @@ public class Partie {
                 // La pièce doit pouvoir atteindre la case selon les règles du jeu.
                 if (!piece.deplacement(caseArrivee)) {
                     Affichage.erreur(this.joueurActuel, "La pièce " + piece.getNom() + " ne peut pas effectuer un tel déplacement !");
-                    // TODO peut-être ajouter un piece.getRegle() 
-                    // pour un message d'erreur personnalisé en fonction du type de pièce
-                    // exemple: Une tour ne peut que se déplacer en ligne droite !
                     return false;
                 }
 

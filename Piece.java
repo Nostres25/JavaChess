@@ -42,7 +42,7 @@ public abstract class Piece {
         this.icone = nouvelleIcone;
     }
 
-    public abstract boolean deplacement ( Case destination);
+    public abstract boolean deplacement(Case destination);
 
      @Override
     public String toString() {
