@@ -10,10 +10,6 @@ public class Joueur {
     private Roi roi;
     private float horloge;
 
-    public static float getHorlogesDefaut() {
-        return HORLOGES_DEFAUT;
-    }
-
     public Joueur(Partie partie, Couleur couleur, String nom) {
         this.horloge = HORLOGES_DEFAUT;
         this.partie = partie;
@@ -41,6 +37,10 @@ public class Joueur {
         }
     }
 
+    public static float getHorlogesDefaut() {
+        return HORLOGES_DEFAUT;
+    }
+
     public Partie getPartie() {
         return this.partie;
     }
@@ -65,12 +65,7 @@ public class Joueur {
         return this.roi;
     }
 
-    public void setHorloge(int nouveauTemps) {
-        this.horloge = nouveauTemps;
-    }
-
     public void retirerTemps(float tempsPerdu) {
         this.horloge = this.horloge - tempsPerdu;
     }
-    
 }

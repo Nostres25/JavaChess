@@ -54,7 +54,7 @@ public abstract class Affichage {
                 }
                 case 4: {
                     // Horloge du joueur noir
-                    if (!partie.getHorlogeActivee()) break;
+                    if (!partie.getHorlogesActivees()) break;
                     Joueur joueurNoir = partie.getJoueur(Couleur.Noir);
                     double secondes = joueurNoir.getHorloge() / 1000;
                     double minutes = Math.floor(secondes / 60);
@@ -64,7 +64,7 @@ public abstract class Affichage {
                 }
                 case 3: {
                     // Horloge du joueur blanc
-                    if (!partie.getHorlogeActivee()) break;
+                    if (!partie.getHorlogesActivees()) break;
                     Joueur joueurBlanc = partie.getJoueur(Couleur.Blanc);
                     double secondes = joueurBlanc.getHorloge() / 1000;
                     double minutes = Math.floor(secondes / 60);

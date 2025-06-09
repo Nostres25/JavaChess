@@ -5,10 +5,10 @@ public class Partie {
     private final Joueur joueurNoir;
     private final Echiquier echiquier; 
     private Joueur joueurActuel;
-    private boolean horlogesActives;
+    private boolean horlogesActivees;
 
     public Partie(String nomJoueur1, String nomJoueur2, boolean avecHorloge) {
-        this.horlogesActives = avecHorloge;
+        this.horlogesActivees = avecHorloge;
         this.echiquier = new Echiquier();
 
         // Initialisation des joueurs
@@ -16,7 +16,7 @@ public class Partie {
         this.joueurNoir = new Joueur(this, Couleur.Noir, nomJoueur2);
     }
     public Partie(Partie partie) {
-        this(partie.getJoueur(Couleur.Blanc).getNom(), partie.getJoueur(Couleur.Noir).getNom(), partie.getHorlogeActivee());
+        this(partie.getJoueur(Couleur.Blanc).getNom(), partie.getJoueur(Couleur.Noir).getNom(), partie.getHorlogesActivees());
     }
 
     public static Couleur getCouleurOpposee(Couleur couleur) {
@@ -89,7 +89,7 @@ public class Partie {
                 }
 
                 // Vérification des obstacles et récupération du premier obstacle 
-                Piece obstacle = this.findObstacle(piece.getCase(), caseArrivee);
+                Piece obstacle = this.trouverObstacles(piece.getCase(), caseArrivee);
 
                 // Une autre pièce ne doit pas empêcher le déplacement selon les règles du jeu
                 if (obstacle != null) {
@@ -254,12 +254,12 @@ public class Partie {
         return this.echiquier.getCase(colonne, ligne);
     }
 
-    public boolean getHorlogeActivee() {
-        return this.horlogesActives;
+    public boolean getHorlogesActivees() {
+        return this.horlogesActivees;
     }
 
 
-    public Piece findObstacle(Case caseDepart, Case caseArrivee) {
+    public Piece trouverObstacles(Case caseDepart, Case caseArrivee) {
         Piece piece = caseDepart.getPiece();
 
         // Une pièce du même camp ne doit pas être dans la case d'arrivée
@@ -311,7 +311,7 @@ public class Partie {
         for (Piece piece : this.getJoueurAdverse(this.joueurActuel).getPieces()) {
             if (
                 piece.deplacement(roi.getCase()) && 
-                this.findObstacle(piece.getCase(), roi.getCase()) == null
+                this.trouverObstacles(piece.getCase(), roi.getCase()) == null
             ) return true;
         }
         
@@ -333,32 +333,9 @@ public class Partie {
         return enEchec;
     }
 
-    public boolean isFin() {
-
-        // Recherche de coup jouable après lequel le roi n'est pas en echec
-        for (Case[] ligneCases : this.echiquier.getCases()) {
-            for (Case caseTestee : ligneCases) {
-
-                // Vérifier pour toutes les pièces jouables si la case est accessible et sans obstacle
-                for (Piece pieceTestee : this.joueurActuel.getPieces()) {
-
-                    if (pieceTestee.deplacement(caseTestee) && this.findObstacle(pieceTestee.getCase(), caseTestee) == null) {
-                        // Verifier si le roi est en echec si la pièce testée est déplacée à la case testée
-                        if (!this.estEnEchec(pieceTestee.getCase(), caseTestee)) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-
-        return true;
-    }
-
-
-    public void validerCoup(Piece pieceDeplacee, Case caseArrivee, float tempsPasse) {
+        public void validerCoup(Piece pieceDeplacee, Case caseArrivee, float tempsPasse) {
         // Retirer le temps de reflexion à l'horloge du joueur
-        if (this.horlogesActives)
+        if (this.horlogesActivees)
             this.joueurActuel.retirerTemps(tempsPasse);
 
         // Deplacer la pièce de la case de départ à la case d'arrivée
@@ -376,6 +353,28 @@ public class Partie {
             Pion pion = (Pion) pieceDeplacee;
             if (!pion.aBouge()) pion.seDeplace();
         }
+    }
+
+    public boolean isFin() {
+
+        // Recherche de coup jouable après lequel le roi n'est pas en echec
+        for (Case[] ligneCases : this.echiquier.getCases()) {
+            for (Case caseTestee : ligneCases) {
+
+                // Vérifier pour toutes les pièces jouables si la case est accessible et sans obstacle
+                for (Piece pieceTestee : this.joueurActuel.getPieces()) {
+
+                    if (pieceTestee.deplacement(caseTestee) && this.trouverObstacles(pieceTestee.getCase(), caseTestee) == null) {
+                        // Verifier si le roi est en echec si la pièce testée est déplacée à la case testée
+                        if (!this.estEnEchec(pieceTestee.getCase(), caseTestee)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     public void fin(String raison) {

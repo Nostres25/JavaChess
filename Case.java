@@ -29,14 +29,10 @@ public class Case {
     }
 
     public String getNumero() {
-    char lettreColonne = Echiquier.getLettreColonne(this.colonne + 1); 
-    int numeroLigne = this.ligne + 1; 
+        char lettreColonne = Echiquier.getLettreColonne(this.colonne + 1); 
+        int numeroLigne = this.ligne + 1; 
 
-    return "" + lettreColonne + numeroLigne;
-}
-
-    public boolean estOccupee(){
-        return contenu != null;
+        return "" + lettreColonne + numeroLigne;
     }
 
     public void setPiece(Piece piece){

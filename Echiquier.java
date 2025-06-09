@@ -49,18 +49,8 @@ public class Echiquier {
         }
     }
 
-
     public Echiquier(Case[][] cases){
         this.cases = cases; 
-
-    }
-
-    public Case[][] getCases(){
-        return this.cases;
-    }
-
-    public Case getCase(int colonne, int ligne){
-        return this.cases[ligne][colonne];
     }
 
     public static int getNombreColonne(char lettre) {
@@ -91,5 +81,12 @@ public class Echiquier {
             default: return '?';
         }
     }
-    
+
+    public Case[][] getCases(){
+        return this.cases;
+    }
+
+    public Case getCase(int colonne, int ligne){
+        return this.cases[ligne][colonne];
+    }   
 }

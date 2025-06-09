@@ -11,7 +11,6 @@ public abstract class Piece {
         this.icone = icone;
     }
 
-
     public Couleur getCouleur() {
         return this.couleur;
     }
@@ -44,7 +43,7 @@ public abstract class Piece {
 
     public abstract boolean deplacement(Case destination);
 
-     @Override
+    @Override
     public String toString() {
         return this.getNom() + " " + this.getCouleur() + " ("+this.getCase().getNumero()+")";
     }
