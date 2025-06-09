@@ -160,7 +160,6 @@ public class Partie {
                     caseArrivee = this.getCase(scanner.nextLine().replace(" ", "").toUpperCase());
                 }
 
-                // TODO Fin du scanner, la case de départ et la case d'arrivée ont été sélectionnés avec succès.
                 float tempsPasse = System.currentTimeMillis() - debutTour;
                 if (this.joueurActuel.getHorloge() - tempsPasse <= 0) {
                     this.joueurActuel.retirerTemps(tempsPasse);
@@ -373,7 +372,8 @@ public class Partie {
         }
 
         // Si un pion a été déplacé, déclarer son déplacement
-        if (pieceDeplacee instanceof Pion pion) {
+        if (pieceDeplacee instanceof Pion) {
+            Pion pion = (Pion) pieceDeplacee;
             if (!pion.aBouge()) pion.seDeplace();
         }
     }
@@ -382,22 +382,25 @@ public class Partie {
 
         Joueur gagnant ;
         switch (raison) {
-            case "forfait" ->  {
+            case "forfait":  {
                 gagnant = this.joueurActuel;
                 Affichage.info(gagnant, this.getJoueurAdverse(gagnant).getNom() + " a déclaré forfait.");
+                break;
             }
-            case "echec" ->  {
+            case "echec":  {
                 gagnant = this.getJoueurAdverse(this.joueurActuel);
                 Affichage.critique(this.joueurActuel, "Echec et mat ! Vous ne disposez d'aucun coup valider pour sauver votre " + this.joueurActuel.getRoi());
+                break;
             }
-            case "temps écoulé" ->  {
+            case "temps écoulé":  {
                 gagnant = this.getJoueurAdverse(this.joueurActuel);
                 double secondes = this.joueurActuel.getHorloge() / 1000;
                 double minutes = Math.floor(secondes / 60);
                 secondes = secondes - minutes * 60;
                 Affichage.critique(this.joueurActuel, "Temps écoulé : "+(int)minutes+"min "+secondes+"s");
+                break;
             }
-            default -> {
+            default: {
                 System.out.println(Affichage.jaune("Partie nulle ! ") + this.joueurActuel.getNom() + ", qui jouait les " + this.joueurActuel.getCouleur() + "s, n'est pas en echec mais ne dispose d'aucun coup valide.");
                 return;
             }

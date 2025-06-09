@@ -46,12 +46,13 @@ public abstract class Affichage {
 
             // Affichage d'informations supplémentaires
             switch (ligneI) {
-                case 6 -> {
+                case 6: {
                     // Coup joué précédemment
                     if (pieceDeplacee != null && ancienneCase != null)
                         affichage += "   " + bleu("Coup joué par "+partie.getJoueur(pieceDeplacee.getCouleur()).getNom()+" : " + ancienneCase.getNumero() + " --> " + pieceDeplacee);
+                    break;
                 }
-                case 4 -> {
+                case 4: {
                     // Horloge du joueur noir
                     if (!partie.getHorlogeActivee()) break;
                     Joueur joueurNoir = partie.getJoueur(Couleur.Noir);
@@ -59,8 +60,9 @@ public abstract class Affichage {
                     double minutes = Math.floor(secondes / 60);
                     secondes = secondes - minutes * 60;
                     affichage += "   - " + joueurNoir.getNom() + " (" + joueurNoir.getCouleur() + ") --> " + bleu("Temps restant: "+(int)minutes+"min "+secondes+"s");
+                    break;
                 }
-                case 3 -> {
+                case 3: {
                     // Horloge du joueur blanc
                     if (!partie.getHorlogeActivee()) break;
                     Joueur joueurBlanc = partie.getJoueur(Couleur.Blanc);
@@ -68,8 +70,9 @@ public abstract class Affichage {
                     double minutes = Math.floor(secondes / 60);
                     secondes = secondes - minutes * 60;
                     affichage += "   - " + joueurBlanc.getNom() + " (" + joueurBlanc.getCouleur() + ") --> " + bleu("Temps restant: "+(int)minutes+"min "+secondes+"s");
+                    break;
                 }
-                default -> {}
+                default: break;
             }
 
             affichage += "\n";
@@ -150,25 +153,25 @@ public abstract class Affichage {
 
     public static char getIcone(Piece piece) {
         if (piece.getCouleur() == Couleur.Blanc) {
-            return switch (piece.getNom()) {
-                case "Pion" -> '♙';
-                case "Cavalier" -> '♘';
-                case "Roi" -> '♔';
-                case "Dame" -> '♕';
-                case "Fou" -> '♗';
-                case "Tour" -> '♖';
-                default -> '?';
-            };
+            switch (piece.getNom()) {
+                case "Pion": return '♙';
+                case "Cavalier": return '♘';
+                case "Roi": return '♔';
+                case "Dame": return '♕';
+                case "Fou": return  '♗';
+                case "Tour": return '♖';
+                default: return '?';
+            }
         } else {
-            return switch (piece.getNom()) {
-                case "Pion" -> '♟';
-                case "Cavalier" -> '♞';
-                case "Roi" -> '♚';
-                case "Dame" -> '♛';
-                case "Fou" -> '♝';
-                case "Tour" -> '♜';
-                default -> '?';
-            };
+            switch (piece.getNom()) {
+                case "Pion": return '♟';
+                case "Cavalier": return '♞';
+                case "Roi": return '♚';
+                case "Dame": return '♛';
+                case "Fou": return '♝';
+                case "Tour": return '♜';
+                default: return '?';
+            }
         }
     }
 }
