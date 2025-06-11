@@ -1,6 +1,6 @@
 # Bienvenue sur le projet JavaChess !
 Il s'agit d'un projet de jeu d'échecs en java. Initialement dans le cadre d'un projet évalué en BUT Informatique, première année.
-En collaboration avec @Youss
+En collaboration avec @YoussTV
 
 ## I) Lancer le jeu d’échecs
 Dans un premier temps, il faut vous assurer que l’application Java est bien installée sur votre système.
